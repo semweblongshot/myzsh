@@ -25,7 +25,6 @@ function addPath {
 
   if [[ "${envvar[1]}" == "-e" ]]
   then
-    echo "get var from env (${envvar[2]})"
     VAR=$(eval echo \$${envvar[2]})
     ADDPATH="${VAR}/bin"
   fi
@@ -34,7 +33,6 @@ function addPath {
   then
     ADDPATH=$1
   fi
-  print "debug: ADDPATH: '${ADDPATH}'"
 
   if [[ -n "${ADDPATH}" ]]
   then

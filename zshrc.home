@@ -63,3 +63,7 @@ export GIT_PAGER='less -FRX'
 
 # CDPATH
 export CDPATH=.:${HOME}
+
+# GIT
+export GIT_HOME=/Applications/GitHub.app/Contents/Resources/git
+addPath -e GIT_HOME

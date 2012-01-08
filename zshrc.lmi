@@ -44,7 +44,9 @@ alias la='ls -la'
 alias a='ls -a'
 alias sl=ls # often screw this up
 
-alias afind='ack-grep -il'
+# LS colors
+export CLICOLOR="true"
+export LSCOLORS="gxfxcxdxbxegedabagacad"
 
 # Less settings
 export PAGER=less
@@ -54,37 +56,42 @@ export GIT_PAGER='less -FRX'
 # CDPATH
 export CDPATH=.:${HOME}:${HOME}/Documents/Workspace/client_support
 
+# PATH
+export PATH=${HOME}/bin:${HOME}/Documents/Workspace/client_support/scripts:
+
 # Java environment
 # export JAVA_HOME=/Library/Java/Home
 export JAVA_HOME=$(/usr/libexec/java_home)
+addPath -e JAVA_HOME
 
 # ARQ
 export ARQROOT=${HOME}/java/ARQ-2.8.8
+addPath -e ARQROOT
 
 # Groovy
 export GROOVY_HOME=${HOME}/java/groovy
+addPath -e GROOVY_HOME
 
 # GIT
 export GIT_HOME=/usr/local/git
+addPath -e GIT_HOME
 
 # subversion
 export SUBVERSION_HOME=/opt/subversion
+addPath -e SUBVERSION_HOME
 
 # MySQL environment
 export MYSQL_HOME=/usr/local/mysql
+addPath -e MYSQL_HOME
 
 # PostgreSQL
 export POSTGRES_HOME=/Library/PostgreSQL/8.3
+addPath -e POSTGRES_HOME
 
 # ANT
 export ANT_HOME=${HOME}/java/ant
+addPath -e ANT_HOME
 
 # Maven
 export MAVEN_HOME=${HOME}/java/maven
-
-# PATH
-export PATH=${GROOVY_HOME}/bin:${ARQROOT}/bin:${HOME}/bin:${HOME}/Documents/Workspace/client_support/scripts:${GIT_HOME}/bin:${SUBVERSION_HOME}/bin:${ANT_HOME}/bin:${MAVEN_HOME}/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11/bin:${POSTGRES_HOME}/bin:${MYSQL_HOME}/bin
-
-# LS colors
-export CLICOLOR="true"
-export LSCOLORS="gxfxcxdxbxegedabagacad"
+addPath -e MAVEN_HOME
