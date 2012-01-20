@@ -27,8 +27,13 @@ ZSH_THEME="longshot"
 plugins=(git osx)
 
 source $ZSH/oh-my-zsh.sh
+
 # Customize to your needs...
 
+# source my functions
+source ${HOME}/Documents/Workspace/myzsh/my_funcs.zsh
+
+# vi mode please
 set -o vi
 
 # Super user
@@ -57,7 +62,7 @@ export GIT_PAGER='less -FRX'
 export CDPATH=.:${HOME}:${HOME}/Documents/Workspace/client_support
 
 # PATH
-export PATH=${HOME}/bin:${HOME}/Documents/Workspace/client_support/scripts:
+export PATH=${HOME}/bin:${HOME}/Documents/Workspace/client_support/scripts:.:${PATH}
 
 # Java environment
 # export JAVA_HOME=/Library/Java/Home
@@ -94,4 +99,8 @@ addPath -e ANT_HOME
 
 # Maven
 export MAVEN_HOME=${HOME}/java/maven
-addPath -e MAVEN_HOME
+addPath -b -e MAVEN_HOME
+
+# Release notes
+export EDRN_HOME=${HOME}/Documents/Workspace/lm-scripts/ed-release-notes
+addPath -e EDRN_HOME
