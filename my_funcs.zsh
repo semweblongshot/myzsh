@@ -26,7 +26,15 @@ function addPath {
   if [[ "${envvar[1]}" == "-e" ]]
   then
     VAR=$(eval echo \$${envvar[2]})
-    ADDPATH="${VAR}/bin"
+    if [[ -d "${VAR}/bin" ]]
+    then
+      ADDPATH="${VAR}/bin"
+    elif [[ -d "${VAR}" ]]
+    then
+      ADDPATH="${VAR}"
+    else
+      ADDPATH=
+    fi
   fi
 
   if [[ "$#" == "1" ]]
@@ -38,11 +46,11 @@ function addPath {
   then
     if [[ -n "${BEFORE}" ]]
     then
-      echo "adding ${ADDPATH} before"
+      # echo "adding ${ADDPATH} before"
       export PATH=${ADDPATH}:${PATH}
     elif [[ -n "${AFTER}" ]]
     then
-      echo "adding ${ADDPATH} after"
+      # echo "adding ${ADDPATH} after"
       export PATH=${PATH}:${ADDPATH}
     else
       echo "don't know where to addpath ${ADDPATH}"
