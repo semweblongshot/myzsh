@@ -67,3 +67,6 @@ export PATH=${HOME}/bin:.:${PATH}
 # GIT
 export GIT_HOME=/Applications/GitHub.app/Contents/Resources/git
 addPath -e GIT_HOME
+
+# personal usb drive
+addPath -b /Volumes/personal/bin 

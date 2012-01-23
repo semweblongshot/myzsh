@@ -104,3 +104,6 @@ addPath -b -e MAVEN_HOME
 # Release notes
 export EDRN_HOME=${HOME}/Documents/Workspace/lm-scripts/ed-release-notes
 addPath -e EDRN_HOME
+
+# personal usb drive
+addPath -b /Volumes/personal/bin 
