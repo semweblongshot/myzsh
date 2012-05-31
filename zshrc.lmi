@@ -59,7 +59,7 @@ export LESS='-idqsMeP?f%f :stdin .?e(EOF) ?xNEXT\: %x.:?ltLine %lt .?bB(%bB?s/%s
 export GIT_PAGER='less -FRX'
 
 # CDPATH
-export CDPATH=.:${HOME}:${HOME}/Documents/Workspace/client_support
+export CDPATH=.:${HOME}:${HOME}/Documents/Workspace/client_support:${HOME}/Documents/Workspace
 
 # PATH
 export PATH=${HOME}/bin:${HOME}/Documents/Workspace/client_support/scripts:.:${PATH}
@@ -98,6 +98,7 @@ export ANT_HOME=${HOME}/java/ant
 addPath -e ANT_HOME
 
 # Maven
+export MAVEN_OPTS="-Xmx2048m"
 export MAVEN_HOME=${HOME}/java/maven
 addPath -b -e MAVEN_HOME
 
