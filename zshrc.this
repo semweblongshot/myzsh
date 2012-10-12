@@ -59,7 +59,7 @@ export LESS='-idqsMeP?f%f :stdin .?e(EOF) ?xNEXT\: %x.:?ltLine %lt .?bB(%bB?s/%s
 export GIT_PAGER='less -FRX'
 
 # CDPATH
-export CDPATH=.:${HOME}
+export CDPATH=.:${HOME}:${HOME}/Workspace:${HOME}/Documents
 
 # PATH
 export PATH=${HOME}/bin:.:/usr/local/git/bin:${PATH}
