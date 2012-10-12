@@ -48,6 +48,7 @@ alias l='ls -l'
 alias la='ls -la'
 alias a='ls -a'
 alias sl=ls # often screw this up
+alias mvn-release='mvn -Darguments="-DcukeTags=@none" release:{clean,prepare,perform}'
 
 # LS colors
 export CLICOLOR="true"
@@ -62,12 +63,15 @@ export GIT_PAGER='less -FRX'
 export CDPATH=.:${HOME}:${HOME}/Documents/Workspace/client_support:${HOME}/Documents/Workspace
 
 # PATH
-export PATH=${HOME}/bin:${HOME}/Documents/Workspace/client_support/scripts:.:${PATH}
+export PATH=${HOME}/bin:${HOME}/Documents/Workspace/client_support/scripts:.:/usr/local/bin:/usr/local/sbin:${PATH}
 
 # Java environment
 # export JAVA_HOME=/Library/Java/Home
 export JAVA_HOME=$(/usr/libexec/java_home)
 addPath -e JAVA_HOME
+
+# Stardog
+export STARDOG_HOME=${HOME}/Documents/Workspace/ontology/stardog
 
 # ARQ
 export ARQROOT=${HOME}/java/ARQ-2.8.8
