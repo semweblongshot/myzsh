@@ -61,7 +61,7 @@ let g:Powerline_symbols = 'fancy'
 set guifont=Bitstream\ Vera\ Sans\ Mono\ for\ Powerline:h14
 
 if &t_Co >= 256 || has("gui_running")
-  colorscheme mustang
+  colorscheme solarized
 else
   colorscheme default
 endif
