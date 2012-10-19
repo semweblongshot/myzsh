@@ -54,21 +54,16 @@ set visualbell
 set noerrorbells
 set number
 set lazyredraw
+" my custom status line -- not needed if powerline there
 set statusline=%F%m%r%h%w\ %{&ff}\ [ROW=%03l/%03L,COL=%03v,PCT=%p%%]\ [ASCII=\%03.3b/HEX=\%02.2B]\ %y
+" powerline
+let g:Powerline_symbols = 'fancy'
 
 set background=dark
-let g:Powerline_symbols = 'fancy'
-set guifont=Bitstream\ Vera\ Sans\ Mono\ for\ Powerline:h14
-
-if &t_Co >= 256 || has("gui_running")
-  colorscheme solarized
-else
-  colorscheme default
-endif
+colorscheme solarized
 
 syntax on
 source ~/.vim/plugin/matchit.vim
-set gfn=Bitsteam\ Vera\ Sans\ Mono\ 12
 
 " try to auto set conf files to shell syntax
 au! BufNewFile,BufRead */conf/* set filetype=sh
