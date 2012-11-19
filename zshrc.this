@@ -42,6 +42,11 @@ alias _='sudo '
 # Show history
 alias h='fc -l 1'
 alias j='jobs'
+alias 1='fg %1'
+alias 2='fg %2'
+alias 3='fg %3'
+alias 4='fg %4'
+alias 5='fg %5'
 
 # List direcory contents
 alias l='ls -l'
@@ -62,7 +67,7 @@ export GIT_PAGER='less -FRX'
 export CDPATH=.:${HOME}:${HOME}/Workspace:${HOME}/Workspace/thistech:${HOME}/Documents
 
 # PATH
-export PATH=${HOME}/bin:.:/usr/local/git/bin:${PATH}
+export PATH=/usr/local/bin:${HOME}/bin:.:/usr/local/git/bin:${PATH}
 
 # personal usb drive
 addPath -b /Volumes/personal/bin 
