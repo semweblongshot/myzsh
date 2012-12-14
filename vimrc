@@ -58,6 +58,7 @@ set lazyredraw
 set statusline=%F%m%r%h%w\ %{&ff}\ [ROW=%03l/%03L,COL=%03v,PCT=%p%%]\ [ASCII=\%03.3b/HEX=\%02.2B]\ %y
 " powerline
 let g:Powerline_symbols = 'fancy'
+call Pl#Theme#InsertSegment('charcode', 'after', 'filetype')
 
 set background=dark
 colorscheme solarized
