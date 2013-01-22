@@ -1,5 +1,5 @@
 # Path to your oh-my-zsh configuration.
-ZSH=$HOME/scm/oh-my-zsh
+ZSH=$HOME/Documents/Workspace/oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
@@ -24,14 +24,14 @@ ZSH_THEME="longshot"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git osx vi-mode)
+plugins=(git osx)
 
 source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
 
 # source my functions
-source ${HOME}/scm/myzsh/my_funcs.zsh
+source ${HOME}/Documents/Workspace/myzsh/my_funcs.zsh
 
 # vi mode please
 set -o vi
@@ -64,9 +64,9 @@ export CDPATH=.:${HOME}
 # PATH
 export PATH=${HOME}/bin:.:${PATH}
 
-# GIT
-export GIT_HOME=/Applications/GitHub.app/Contents/Resources/git
-addPath -e GIT_HOME
-
 # personal usb drive
 addPath -b /Volumes/personal/bin 
+
+# PostgreSQL
+PG_HOME=/Library/PostgreSQL/9.1
+addPath -b -e PG_HOME
