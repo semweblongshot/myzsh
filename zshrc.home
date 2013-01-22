@@ -35,6 +35,7 @@ source ${HOME}/Documents/Workspace/myzsh/my_funcs.zsh
 
 # vi mode please
 set -o vi
+bindkey -v
 
 # Super user
 alias _='sudo '
