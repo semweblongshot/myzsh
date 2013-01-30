@@ -68,3 +68,6 @@ source ~/.vim/plugin/matchit.vim
 
 " try to auto set conf files to shell syntax
 au! BufNewFile,BufRead */conf/* set filetype=sh
+
+" json format
+map  :%!python -m json.tool
