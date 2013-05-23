@@ -72,7 +72,8 @@ export PATH=/usr/local/bin:${HOME}/bin:.:/usr/local/git/bin:${PATH}
 export PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
 
 # AWS CLI
-export EC2_HOME=~/.ec2/ec2-api-tools-1.6.6.1
+export EC2_URL=https://ec2.us-west-2.amazonaws.com
+export EC2_HOME=/Users/longshot/Workspace/AWS/ec2-api-tools-1.6.7.2
 export EC2_CERT=~/.ec2/cert.pem
 export EC2_PRIVATE_KEY=~/.ec2/pk.pem
 addPath -b -e EC2_HOME
@@ -86,6 +87,10 @@ addPath /Applications/SmartBear/soapUI-4.5.1.app/Contents/Resources/app/bin
 # MAVEN
 export MAVEN_HOME=${HOME}/Java/apache-maven-3.0.4
 addPath -b -e MAVEN_HOME
+
+# JMETER
+export JMETER_HOME=${HOME}/Java/apache-jmeter-2.9
+addPath -b -e JMETER_HOME
 
 # JAVA
 export JAVA_HOME=$(/usr/libexec/java_home)

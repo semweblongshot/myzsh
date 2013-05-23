@@ -7,6 +7,7 @@ filetype on
 filetype plugin on
 filetype indent on
 
+set clipboard=unnamed
 set encoding=utf-8 nobomb
 set termencoding=utf-8
 set fileformat=unix 

@@ -1,0 +1,8 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =6
+let g:netrw_dirhist_1='/Users/longshot/Workspace/provisionining/kitchen/cookbooks/java'
+let g:netrw_dirhist_2='/Users/longshot/Workspace/provisionining/kitchen/cookbooks/thistech-virtual/attributes'
+let g:netrw_dirhist_3='/Users/longshot/.vim'
+let g:netrw_dirhist_4='/Users/longshot/Workspace/provisionining/kitchen/cookbooks/thistech-cis/attributes'
+let g:netrw_dirhist_5='/Users/longshot/.ssh'
+let g:netrw_dirhist_6='/Users/longshot/Workspace/provisionining/kitchen/cookbooks/thistech-pois/templates/default'
