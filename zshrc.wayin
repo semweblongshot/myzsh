@@ -1,0 +1,94 @@
+# Path to your oh-my-zsh configuration.
+ZSH=$HOME/Workspace/oh-my-zsh
+
+# Set name of the theme to load.
+# Look in ~/.oh-my-zsh/themes/
+# Optionally, if you set this to "random", it'll load a random theme each
+# time that oh-my-zsh is loaded.
+ZSH_THEME="longshot"
+
+# Set to this to use case-sensitive completion
+# CASE_SENSITIVE="true"
+
+# Comment this out to disable weekly auto-update checks
+# DISABLE_AUTO_UPDATE="true"
+
+# Uncomment following line if you want to disable colors in ls
+# DISABLE_LS_COLORS="true"
+
+# Uncomment following line if you want to disable autosetting terminal title.
+# DISABLE_AUTO_TITLE="true"
+
+# Uncomment following line if you want red dots to be displayed while waiting for completion
+# COMPLETION_WAITING_DOTS="true"
+
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Example format: plugins=(rails git textmate ruby lighthouse)
+plugins=(git osx vi-mode)
+
+source $ZSH/oh-my-zsh.sh
+
+# Customize to your needs...
+
+# source my functions
+source ${HOME}/Workspace/myzsh/my_funcs.zsh
+
+# vi mode please
+set -o vi
+bindkey -v
+
+# Super user
+alias _='sudo '
+
+# Show history
+alias h='fc -l 1'
+alias j='jobs'
+alias 1='fg %1'
+alias 2='fg %2'
+alias 3='fg %3'
+alias 4='fg %4'
+alias 5='fg %5'
+
+# List direcory contents
+alias l='ls -l'
+alias la='ls -la'
+alias a='ls -a'
+alias sl=ls # often screw this up
+
+# LS colors
+export CLICOLOR="true"
+export LSCOLORS="gxfxcxdxbxegedabagacad"
+
+# Less settings
+export PAGER=less
+export LESS='-idqsMeP?f%f :stdin .?e(EOF) ?xNEXT\: %x.:?ltLine %lt .?bB(%bB?s/%s) :) .?pB%pB\% .?m(file %i of %m) ....%t'
+export GIT_PAGER='less -FRX'
+
+# CDPATH
+export CDPATH=.:${HOME}:${HOME}/Workspace:${HOME}/Workspace/wayin:${HOME}/Documents
+
+# PATH
+export PATH=/usr/local/sbin:/usr/local/bin:${HOME}/bin:.:/usr/local/git/bin:${PATH}
+export PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+
+# AWS CLI
+export EC2_URL=https://ec2.us-west-2.amazonaws.com
+export EC2_HOME=/Users/longshot/Workspace/AWS/ec2-api-tools-1.6.7.2
+export EC2_CERT=~/.ec2/cert.pem
+export EC2_PRIVATE_KEY=~/.ec2/pk.pem
+addPath -b -e EC2_HOME
+
+# personal usb drive
+addPath -b /Volumes/personal/bin 
+
+# MAVEN
+export MAVEN_HOME=${HOME}/Java/apache-maven-3.0.5
+addPath -b -e MAVEN_HOME
+
+# JMETER
+export JMETER_HOME=${HOME}/Java/apache-jmeter-2.9
+addPath -b -e JMETER_HOME
+
+# JAVA
+export JAVA_HOME=$(/usr/libexec/java_home)
+addPath -b -e JAVA_HOME
