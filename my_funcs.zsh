@@ -57,3 +57,8 @@ function addPath {
     fi
   fi
 }
+
+# upgrade global package
+syspip(){
+  PIP_REQUIRE_VIRTUALENV="" pip "$@"
+}

@@ -7,6 +7,7 @@ filetype on
 filetype plugin on
 filetype indent on
 
+set clipboard=unnamed
 set encoding=utf-8 nobomb
 set termencoding=utf-8
 set fileformat=unix 
@@ -68,3 +69,6 @@ source ~/.vim/plugin/matchit.vim
 
 " try to auto set conf files to shell syntax
 au! BufNewFile,BufRead */conf/* set filetype=sh
+
+" json format
+map  :%!python -m json.tool
