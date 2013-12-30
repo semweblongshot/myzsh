@@ -1,5 +1,5 @@
 # Path to your oh-my-zsh configuration.
-ZSH=$HOME/Workspace/oh-my-zsh
+ZSH=${HOME}/Workspace/oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
@@ -24,7 +24,7 @@ ZSH_THEME="longshot"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git osx vi-mode)
+plugins=(mvn brew ruby python rvm git osx vi-mode)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -36,6 +36,9 @@ source ${HOME}/Workspace/myzsh/my_funcs.zsh
 # vi mode please
 set -o vi
 bindkey -v
+
+# don't prompt me, I know what rm does
+set -H
 
 # Super user
 alias _='sudo '
@@ -54,16 +57,23 @@ alias l='ls -l'
 alias la='ls -la'
 alias a='ls -a'
 alias sl=ls # often screw this up
-alias flushmemcached='echo flush_all | nc localhost 11211'
+alias flush="sync; echo flush_all | nc localhost 11211; redis-cli flushall; sync"
+alias run-clienttests="mvn test -Dtest=ClientTests -Dclient.test.verbose 2>&1 | tee ~/logs/uitest-$(date +"%Y-%-m-%d@%H:%M:%S").log"
+alias run-bundled="flush; mvn -Prun-bundled 2>&1 | tee ~/logs/dev-$(date +"%Y-%-m-%d@%H:%M:%S").log"
+alias run-jetty="flush; mvn -Pjetty-run 2>&1 | tee ~/logs/dev-$(date +"%Y-%-m-%d@%H:%M:%S").log"
+alias insta-delete="curl -X DELETE https://api.instagram.com/v1/subscriptions\?client_secret\=c0ae57e951c44a89b075d4ca2e0a2ecb\&object\=all\&client_id\=99c23c1b35364015b0c92fa5594a9029"
+
+[[ -f /etc/profile.d/wayin-env.sh ]] && . /etc/profile.d/wayin-env.sh
+[[ -f /etc/profile.d/aws-credentials.sh ]] && . /etc/profile.d/aws-credentials.sh
 
 # virtualenv should use Distribute instead of legacy setuptools
 export VIRTUALENV_DISTRIBUTE=true
 # Centralized location for new virtual environments
-export PIP_VIRTUALENV_BASE=$HOME/Virtualenvs
+export PIP_VIRTUALENV_BASE=${HOME}/Virtualenvs
 # pip should only run if there is a virtualenv currently activated
-export PIP_REQUIRE_VIRTUALENV=true
+export PIP_REQUIRE_VIRTUALENV=false
 # cache pip-installed packages to avoid re-downloading
-export PIP_DOWNLOAD_CACHE=$HOME/.pip/cache
+export PIP_DOWNLOAD_CACHE=${HOME}/.pip/cache
 
 # LS colors
 export CLICOLOR="true"
@@ -71,47 +81,84 @@ export LSCOLORS="gxfxcxdxbxegedabagacad"
 
 # Less settings
 export PAGER=less
-export LESS='-idqsMeP?f%f :stdin .?e(EOF) ?xNEXT\: %x.:?ltLine %lt .?bB(%bB?s/%s) :) .?pB%pB\% .?m(file %i of %m) ....%t'
+export LESS='-RidqsMeP?f%f :stdin .?e(EOF) ?xNEXT\: %x.:?ltLine %lt .?bB(%bB?s/%s) :) .?pB%pB\% .?m(file %i of %m) ....%t'
 export GIT_PAGER='less -FRX'
 
 # CDPATH
 export CDPATH=.:${HOME}:${HOME}/Workspace:${HOME}/Workspace/wayin:${HOME}/Documents
 
 # PATH
-export PATH=/usr/local/sbin:/usr/local/bin:${HOME}/bin:.:/usr/local/git/bin:${PATH}
-export PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/share/npm/lib/node_modules/grunt-cli/bin
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/local/mysql/bin:${HOME}/bin:.:/usr/local/git/bin:${PATH}
+export PATH=$PATH:${HOME}/.rvm/bin # Add RVM to PATH for scripting
+rvm use 2.0.0 &>/dev/null
 
 # Hub home
-export HUBHOME=/Users/longshot/Workspace/wayin/twithub
+export HUBHOME=${HOME}/Workspace/wayin/twithub
 
 # AWS env
-export AWS_ACCESS_KEY=AKIAIWMS4UR6APVUCZZA
-export AWS_SECRET_KEY=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
+export AWS_CREDENTIAL_FILE=${HOME}/Workspace/AWS/AWS-Credentials
+# export AWS_ACCESS_KEY=AKIAIWQN6EPADGR6J42Q
+# export AWS_SECRET_KEY=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
 export EC2_REGION=us-east-1
 export EC2_URL=https://ec2.${EC2_REGION}.amazonaws.com
 export EC2_INSTANCE_ID=
 
+# AWS CW
+export AWS_CLOUDWATCH_HOME=${HOME}/Workspace/AWS/CloudWatch-1.0.13.4
+addPath -b -e AWS_CLOUDWATCH_HOME
+
+# AWS CFN
+export AWS_CLOUDFORMATION_HOME=${HOME}/Workspace/AWS/AWSCloudFormation-1.0.12
+addPath -b -e AWS_CLOUDFORMATION_HOME
+
+# AWS AutoScale
+export AWS_AUTO_SCALING_HOME=${HOME}/Workspace/AWS/AutoScaling-1.0.61.3
+addPath -b -e AWS_AUTO_SCALING_HOME
+
+# AWS AMI CLI
+export EC2_AMITOOL_HOME=${HOME}/Worksapce/AWS/ec2-ami-tools-1.4.0.9
+addPath -b -e EC2_AMITOOL_HOME
+
 # AWS CLI
-export EC2_HOME=/Users/longshot/Workspace/AWS/ec2-api-tools-1.6.7.3
+export EC2_HOME=${HOME}/Workspace/AWS/ec2-api-tools-1.6.10.1
 addPath -b -e EC2_HOME
+
+# AWS ELB
+export AWS_ELB_HOME=${HOME}/Workspace/AWS/ElasticLoadBalancing-1.0.17.0
+addPath -b -e AWS_ELB_HOME
+
+# AWS IAM
+export AWS_IAM_HOME=${HOME}/Workspace/AWS/IAMCli-1.5.0
+addPath -b -e AWS_IAM_HOME
 
 # personal usb drive
 addPath -b /Volumes/personal/bin 
 
 # MAVEN
 export MAVEN_OPTS="-Xmx2g -Xms256m -XX:MaxPermSize=256m"
-export MAVEN_HOME=${HOME}/Java/apache-maven-3.0.5
+export MAVEN_HOME=${HOME}/Java/apache-maven
 addPath -b -e MAVEN_HOME
 
 # JMETER
-export JMETER_HOME=${HOME}/Java/apache-jmeter-2.9
+export JMETER_HOME=${HOME}/Java/apache-jmeter
 addPath -b -e JMETER_HOME
 
 # Cassandra
-# export CASSANDRA_HOME=${HOME}/Java/apache-cassandra-1.1.12
-export CASSANDRA_HOME=${HOME}/Java/apache-cassandra-1.2.5
+export CASSANDRA_HOME=${HOME}/Java/apache-cassandra
 addPath -b -e CASSANDRA_HOME
 
 # JAVA
 export JAVA_HOME=$(/usr/libexec/java_home)
 addPath -b -e JAVA_HOME
+
+# Gradle
+export GRADLE_HOME=${HOME}/Java/gradle
+addPath -b -e GRADLE_HOME
+
+# Groovy
+export GROOVY_HOME=${HOME}/Java/groovy
+addPath -b -e GROOVY_HOME
+
+# dtruss
+addPath -b ${HOME}/Workspace/dtruss-osx
