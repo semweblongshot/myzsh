@@ -19,7 +19,7 @@ local prompt="%{${fg[$CARETCOLOR]}%}»%{${reset_color}%}"
 PROMPT="
 ╭─${user_host}:${current_dir} ${git_branch}
 ╰─[${time}] %B%b ${prompt}  "
-RPS1='$(vi_mode_prompt_info) ${return_code}'
+RPS1='$(vi_mode_prompt_info 2>/dev/null) ${return_code}'
 # RPS1='${return_code}'
 
 MODE_INDICATOR="%{$fg_bold[magenta]%}<%{$reset_color%}%{$fg[magenta]%}<<%{$reset_color%}"
