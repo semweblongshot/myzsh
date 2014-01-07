@@ -58,9 +58,11 @@ alias la='ls -la'
 alias a='ls -a'
 alias sl=ls # often screw this up
 alias flush="sync; echo flush_all | nc localhost 11211; redis-cli flushall; sync"
-alias run-clienttests="mvn test -Dtest=ClientTests -Dclient.test.verbose 2>&1 | tee ~/logs/uitest-$(date +"%Y-%-m-%d@%H:%M:%S").log"
-alias run-bundled="flush; mvn -Prun-bundled 2>&1 | tee ~/logs/dev-$(date +"%Y-%-m-%d@%H:%M:%S").log"
-alias run-jetty="flush; mvn -Pjetty-run 2>&1 | tee ~/logs/dev-$(date +"%Y-%-m-%d@%H:%M:%S").log"
+alias cleantest="mvn clean test 2>&1 | tee ~/logs/test-\$(date +"%Y-%-m-%d@%H:%M:%S").log"
+alias clienttests="mvn test -Dtest=ClientTests -Dclient.test.verbose 2>&1 | tee ~/logs/uitest-\$(date +"%Y-%-m-%d@%H:%M:%S").log"
+alias run-bundled="flush; mvn -Prun-bundled 2>&1 | tee ~/logs/dev-\$(date +"%Y-%-m-%d@%H:%M:%S").log"
+alias run-optimize="flush; mvn -X -Poptimize-webapp clean deploy 2>&1 | tee ~/logs/dev-\$(date +"%Y-%-m-%d@%H:%M:%S").log"
+alias run-jetty="flush; mvn -Pjetty-run 2>&1 | tee ~/logs/dev-\$(date +"%Y-%-m-%d@%H:%M:%S").log"
 alias insta-delete="curl -X DELETE https://api.instagram.com/v1/subscriptions\?client_secret\=c0ae57e951c44a89b075d4ca2e0a2ecb\&object\=all\&client_id\=99c23c1b35364015b0c92fa5594a9029"
 
 [[ -f /etc/profile.d/wayin-env.sh ]] && . /etc/profile.d/wayin-env.sh
@@ -98,8 +100,6 @@ export HUBHOME=${HOME}/Workspace/wayin/twithub
 
 # AWS env
 export AWS_CREDENTIAL_FILE=${HOME}/Workspace/AWS/AWS-Credentials
-# export AWS_ACCESS_KEY=AKIAIWQN6EPADGR6J42Q
-# export AWS_SECRET_KEY=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
 export EC2_REGION=us-east-1
 export EC2_URL=https://ec2.${EC2_REGION}.amazonaws.com
 export EC2_INSTANCE_ID=
