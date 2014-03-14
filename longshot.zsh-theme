@@ -7,13 +7,14 @@ function prompt_char {
 # return code with special char
 local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
 
-local user_host='%{$fg[blue]%}%n@%m%{${reset_color}%}'
-local current_dir='%{$fg[cyan]%}%~%{$reset_color%}'
+local user_host='%{$fg[cyan]%}%n%{${reset_color}@%{$fg[cyan]%}%m%{${reset_color}%}'
+local current_dir='%{$fg[blue]%}%~%{$reset_color%}'
 local git_branch='$(git_prompt_info)%{${reset_color}%}'
-local time="%{$fg[cyan]%}%D@%*%f%{${reset_color}%}"
+local time="%{$fg[blue]%}%D@%*%f%{${reset_color}%}"
 local root_prompt="%{${fg[red]}%}»%{${reset_color}%}"
 local prompt="%{${fg[$CARETCOLOR]}%}»%{${reset_color}%}"
 
+# OLD
 # PROMPT="
 # ╭─${user_host}:${current_dir} ${git_branch}
 # ╰─[${time}] %B%b ${prompt}  "
@@ -29,7 +30,7 @@ ZSH_THEME_GIT_PROMPT_SUFFIX="%{$fg[yellow]%})%{$reset_color%}"
 
 PROMPT="%(?, ,${return_code}
 )
-${user_host}:${current_dir} ${git_branch}
+${user_host}:${current_dir}:${git_branch}
 %_$(prompt_char) "
 
 RPROMPT='${time}'
