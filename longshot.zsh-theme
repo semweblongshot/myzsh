@@ -14,10 +14,10 @@ local root_prompt="%{${fg[red]}%}»%{${reset_color}%}"
 local prompt="%{${fg[yellow]}%}»%{${reset_color}%}"
 local smiley="%{$FG[007]%}[%{${reset_color}%}%(?,%{$FG[046]%}:%)%{$reset_color%},%{$FG[196]%}:(%{$reset_color%})%{$FG[007]%}]%{${reset_color}%}"
 
-ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[yellow]%}("
+ZSH_THEME_GIT_PROMPT_PREFIX="%{$fg[yellow]%}branch:"
 ZSH_THEME_GIT_PROMPT_CLEAN="%{$fg[green]%}○%{$reset_color%}"
 ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg[red]%}⚡%{$reset_color%}"
-ZSH_THEME_GIT_PROMPT_SUFFIX="%{$fg[yellow]%})%{$reset_color%}"
+ZSH_THEME_GIT_PROMPT_SUFFIX=""
 
 # main prompt/PS1
 PROMPT="%(?, ,${return_code}
