@@ -57,13 +57,14 @@ set noerrorbells
 set number
 set lazyredraw
 " my custom status line -- not needed if powerline there
-set statusline=%F%m%r%h%w\ %{&ff}\ [ROW=%03l/%03L,COL=%03v,PCT=%p%%]\ [ASCII=\%03.3b/HEX=\%02.2B]\ %y
-" powerline
-let g:Powerline_symbols = 'fancy'
-call Pl#Theme#InsertSegment('charcode', 'after', 'filetype')
+" set statusline=%F%m%r%h%w\ %{&ff}\ [ROW=%03l/%03L,COL=%03v,PCT=%p%%]\ [ASCII=\%03.3b/HEX=\%02.2B]\ %y
 
-set background=dark
+set laststatus=2
+" set background=dark
 colorscheme solarized
+let g:airline_theme='solarized'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_powerline_fonts = 1 
 
 syntax on
 source ~/.vim/plugin/matchit.vim
