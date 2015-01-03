@@ -1,6 +1,29 @@
 typeset -a J7_LIST
 typeset -a J8_LIST
 
+function get-java {
+    if [[ "$#" -ne 3 ]]
+    then
+        echo "Usage: get-java <major> <minor> <build>"
+        echo "For example, 8u25-b17 would be 8 25 17 or 7u71-b14 would be 7 71 14"
+        return
+    fi
+
+    MAJOR="$1"
+    MINOR="$2"
+    BUILD="$3"
+    echo "Getting JDK ${MAJOR}u${MINOR}"
+    curl -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
+    open jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
+    open "/Volumes/JDK ${MAJOR} Update ${MINOR}/JDK ${MAJOR} Update ${MINOR}.pkg"
+    sleep 5
+    echo -n "Hit enter after JDK ${MAJOR} install completes."
+    read IN
+    diskutil unmount $(diskutil list | grep "JDK ${MAJOR}" | awk '{ print $NF }')
+    rm -f jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
+    echo
+}
+
 function getJVMs {
   pushd /Library/Java/JavaVirtualMachines/ &>/dev/null
   I=1
