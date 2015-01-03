@@ -32,6 +32,7 @@ source $ZSH/oh-my-zsh.sh
 
 # source my functions
 source ${HOME}/Documents/Workspace/myzsh/my_funcs.zsh
+getJVMs
 
 # vi mode please
 set -o vi
