@@ -25,28 +25,18 @@ function get-java {
 }
 
 function getJVMs {
-  # pushd /Library/Java/JavaVirtualMachines/ &>/dev/null
-  # I=1
-  # for DIR in $(ls -1d jdk1.7*)
-  # do
-    # local JVM=$(echo ${DIR} | sed -e 's/^jdk//' -e 's/.jdk$//')
-    # J7_LIST[I]=${JVM}
-    # (( I += 1 ))
-  # done
-  # popd&>/dev/null
+    pushd /Library/Java/JavaVirtualMachines/ &>/dev/null
+    I=1
+    for DIR in $(ls -1d jdk*)
+    do
+        local JVM=$(echo ${DIR} | sed -e 's/^jdk//' -e 's/.jdk$//' -e 's/\/$//')
+        JAVA_LIST[I]=${JVM}
+        (( I += 1 ))
+    done
+    popd&>/dev/null
+    (( I -= 1 ))
 
-  pushd /Library/Java/JavaVirtualMachines/ &>/dev/null
-  I=1
-  for DIR in $(ls -1d jdk1.8*)
-  do
-    local JVM=$(echo ${DIR} | sed -e 's/^jdk//' -e 's/.jdk$//')
-    J8_LIST[I]=${JVM}
-    (( I += 1 ))
-  done
-  popd&>/dev/null
-
-  # echo "Latest Java 7: ${J7_LIST[-1]} from ${J7_LIST}"
-  echo "Lastest Java 8: ${J8_LIST[-1]} from ${J8_LIST}"
+    echo "Lastest Java: ${JAVA_LIST[I]} from ${JAVA_LIST[@]}"
 }
 
 function updateJava {
