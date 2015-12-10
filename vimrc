@@ -42,7 +42,7 @@ set scrollbind
 set tabstop=2
 set smarttab
 set expandtab
-set shiftwidth=4
+set shiftwidth=2
 set shiftround
 set mousehide
 set showmode
