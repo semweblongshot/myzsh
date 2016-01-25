@@ -71,6 +71,47 @@ function get-java-for {
     echo
 }
 
+function echo-java-for {
+    if [[ "$#" -ne 4 ]]
+    then
+        echo "Usage: get-java <platform> <major> <minor> <build>"
+        echo "Platform should be one of linux-i586, linux-x64, macosx-x64, windows-i586 or windows-x64"
+        echo "For example, 8u25-b17 would be 8 25 17 or 7u71-b14 would be 7 71 14"
+        return
+    fi
+
+    PLATFORM="$1"
+    MAJOR="$2"
+    MINOR="$3"
+    BUILD="$4"
+
+    case "${PLATFORM}" in
+        "linux-i586")
+            SUFFIX="tar.gz"
+            ;;
+        "linux-x64")
+            SUFFIX="tar.gz"
+            ;;
+        "macosx-x64")
+            SUFFIX="dmg"
+            ;;
+        "windows-i586")
+            SUFFIX="exe"
+            ;;
+        "windows-x64")
+            SUFFIX="exe"
+            ;;
+        *)
+            echo "ERROR: Unable to find platform ${PLATFORM}"
+            return
+            ;;
+    esac
+
+    echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
+    echo "curl -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
+    echo
+}
+
 function getJVMs {
     pushd /Library/Java/JavaVirtualMachines/ &>/dev/null
     I=1
