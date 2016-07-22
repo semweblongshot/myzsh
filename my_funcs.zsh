@@ -37,7 +37,7 @@ function getJVMs {
 
   pushd /Library/Java/JavaVirtualMachines/ &>/dev/null
   I=1
-  for DIR in $(ls -1d jdk1.8*)
+  for DIR in $(ls -1rtd jdk1.8*)
   do
     local JVM=$(echo ${DIR} | sed -e 's/^jdk//' -e 's/.jdk$//')
     J8_LIST[I]=${JVM}
