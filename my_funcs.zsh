@@ -24,17 +24,95 @@ function get-java {
     echo
 }
 
-function getJVMs {
-  # pushd /Library/Java/JavaVirtualMachines/ &>/dev/null
-  # I=1
-  # for DIR in $(ls -1d jdk1.7*)
-  # do
-    # local JVM=$(echo ${DIR} | sed -e 's/^jdk//' -e 's/.jdk$//')
-    # J7_LIST[I]=${JVM}
-    # (( I += 1 ))
-  # done
-  # popd&>/dev/null
+function get-java-for {
+    if [[ "$#" -ne 4 ]]
+    then
+        echo "Usage: get-java <platform> <major> <minor> <build>"
+        echo "Platform should be one of linux-i586, linux-x64, macosx-x64, windows-i586 or windows-x64"
+        echo "For example, 8u25-b17 would be 8 25 17 or 7u71-b14 would be 7 71 14"
+        return
+    fi
 
+    PLATFORM="$1"
+    MAJOR="$2"
+    MINOR="$3"
+    BUILD="$4"
+
+    case "${PLATFORM}" in
+        "linux-i586")
+            SUFFIX="tar.gz"
+            ;;
+        "linux-x64")
+            SUFFIX="tar.gz"
+            ;;
+        "macosx-x64")
+            SUFFIX="dmg"
+            ;;
+        "windows-i586")
+            SUFFIX="exe"
+            ;;
+        "windows-x64")
+            SUFFIX="exe"
+            ;;
+        *)
+            echo "ERROR: Unable to find platform ${PLATFORM}"
+            return
+            ;;
+    esac
+
+    echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
+    echo "curl -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
+    curl -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O "http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
+    # http://download.oracle.com/otn-pub/java/jdk/8u66-b17/jdk-8u66-linux-i586.tar.gz
+    # http://download.oracle.com/otn-pub/java/jdk/8u66-b17/jdk-8u66-linux-x64.tar.gz
+    # http://download.oracle.com/otn-pub/java/jdk/8u66-b17/jdk-8u66-macosx-x64.dmg
+    # http://download.oracle.com/otn-pub/java/jdk/8u66-b18/jdk-8u66-windows-i586.exe
+    # http://download.oracle.com/otn-pub/java/jdk/8u66-b18/jdk-8u66-windows-x64.exe
+    echo
+}
+
+function echo-java-for {
+    if [[ "$#" -ne 4 ]]
+    then
+        echo "Usage: get-java <platform> <major> <minor> <build>"
+        echo "Platform should be one of linux-i586, linux-x64, macosx-x64, windows-i586 or windows-x64"
+        echo "For example, 8u25-b17 would be 8 25 17 or 7u71-b14 would be 7 71 14"
+        return
+    fi
+
+    PLATFORM="$1"
+    MAJOR="$2"
+    MINOR="$3"
+    BUILD="$4"
+
+    case "${PLATFORM}" in
+        "linux-i586")
+            SUFFIX="tar.gz"
+            ;;
+        "linux-x64")
+            SUFFIX="tar.gz"
+            ;;
+        "macosx-x64")
+            SUFFIX="dmg"
+            ;;
+        "windows-i586")
+            SUFFIX="exe"
+            ;;
+        "windows-x64")
+            SUFFIX="exe"
+            ;;
+        *)
+            echo "ERROR: Unable to find platform ${PLATFORM}"
+            return
+            ;;
+    esac
+
+    echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
+    echo "curl -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
+    echo
+}
+
+function getJVMs {
   pushd /Library/Java/JavaVirtualMachines/ &>/dev/null
   I=1
   for DIR in $(ls -1rtd jdk1.8*)
@@ -46,7 +124,7 @@ function getJVMs {
   popd&>/dev/null
 
   # echo "Latest Java 7: ${J7_LIST[-1]} from ${J7_LIST}"
-  echo "Lastest Java 8: ${J8_LIST[-1]} from ${J8_LIST}"
+  echo "Lastest Java: ${J8_LIST[-1]} from ${J8_LIST}"
 }
 
 function updateJava {

@@ -42,7 +42,7 @@ set scrollbind
 set tabstop=2
 set smarttab
 set expandtab
-set shiftwidth=4
+set shiftwidth=2
 set shiftround
 set mousehide
 set showmode
@@ -60,11 +60,12 @@ set lazyredraw
 " set statusline=%F%m%r%h%w\ %{&ff}\ [ROW=%03l/%03L,COL=%03v,PCT=%p%%]\ [ASCII=\%03.3b/HEX=\%02.2B]\ %y
 
 set laststatus=2
-" set background=dark
-colorscheme solarized
+set background=dark
+" colorscheme solarized
 let g:airline_theme='solarized'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline_powerline_fonts = 1 
+set guifont=Sauce_Code_Powerline:h11
 
 syntax on
 source ~/.vim/plugin/matchit.vim

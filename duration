@@ -1,0 +1,87 @@
+#!/bin/bash
+
+MIN=60
+HOUR=$((60*60))
+DAY=$((60*60*24))
+
+timemark() {
+    [[  "$#" -ne 1 ]] && (echo "Usage: timemark VAR_TO_SET";return)
+    eval $1=$(date +"%s")
+}
+
+duration() {
+    PREFIX=
+    if [[ "$#" -eq 1 ]]
+    then
+        DIFF=$1
+    elif [[ "$#" -eq 2 ]]
+    then
+        FIRST=$1
+        LAST=$2
+        ((DIFF = LAST - FIRST))
+    elif [[ "$#" -eq 3 ]]
+    then
+        FIRST=$1
+        LAST=$2
+        ((DIFF = LAST - FIRST))
+        PREFIX="$3"
+    else
+        echo "Usage: duration <start> <finish> <text> or duration <start> <finish> or duration <duration>"
+        return
+    fi
+
+    echo "Computing duration from ${DIFF}"
+
+    # SECONDS
+    if [[ ${DIFF} -lt ${MIN} ]]
+    then
+        if [[ -z "${PREFIX}" ]]
+        then
+            echo "Duration: ${DIFF} seconds"
+        else
+            echo "${PREFIX} ${DIFF} seconds"
+        fi
+    else
+        # MINUTES
+        if [[ ${DIFF} -lt ${HOUR} ]]
+        then
+            if [[ -z "${PREFIX}" ]]
+            then
+                echo  "Duration: $((DIFF/${MIN})) minutes and $((DIFF%${MIN})) seconds"
+            else
+                echo  "${PREFIX} $((DIFF/${MIN})) minutes and $((DIFF%${MIN})) seconds"
+            fi
+        else
+            # HOURS
+            if [[ ${DIFF} -lt ${DAY} ]]
+            then
+                if [[ -z "${PREFIX}" ]]
+                then
+                    echo  "Duration: $((DIFF/${HOUR})) hours $((DIFF%${HOUR}/${MIN})) minutes and $((DIFF%${HOUR}%${MIN})) seconds"
+                else
+                    echo  "${PREFIX} $((DIFF/${HOUR})) hours $((DIFF%${HOUR}/${MIN})) minutes and $((DIFF%${HOUR}%${MIN})) seconds"
+                fi
+            else
+                echo "TODO: compute days/hours/minutes/seconds"
+            fi
+        fi
+    fi
+}
+
+timemark START
+
+echo "MIN=${MIN}"
+echo "HOUR=${HOUR}"
+echo "DAY=${DAY}"
+duration 0 15 "debug test:"
+duration 0 60 "debug test:"
+duration 0 300 "debug test:"
+duration 0 3600 "debug test:"
+duration 0 3900 "debug test:"
+duration 0 18000 "debug test:"
+duration 0 ${DAY} "debug test:"
+sleep 5
+
+timemark END
+
+duration ${START} ${END}
