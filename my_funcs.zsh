@@ -1,10 +1,21 @@
 typeset -a J7_LIST
 typeset -a J8_LIST
 
+function parse-java {
+  URL="$1"
+
+  # http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/jdk-8u121-macosx-x64.dmg
+  #                                                                     1       2        3      4          5 (1)   6 (2)   7      8     9
+  echo "Java URL: ${URL}"
+  echo -n "Parsed data: "
+  # echo "${URL}" | sed -e "s@^http://download.oracle.com/otn-pub/java/jdk/\([0-9]*\)u\([0-9]*\)-b\([0-9]*\)/\(.*\)/jdk-\([0-9]*\)u\([0-9]*\)-\(.*\)-\([^.]*\)\.\(.*\)@major:\1 minor:\2 build:\3 key:\4 platform:\7 arch:\8 extension:\9@"
+  echo "${URL}" | sed -e "s@^http://download.oracle.com/otn-pub/java/jdk/\([0-9]*\)u\([0-9]*\)-b\([0-9]*\)/\(.*\)/jdk-\([0-9]*\)u\([0-9]*\)-\(.*\)-\([^.]*\)\.\(.*\)@get-java-for \7-\8 \1 \2 \3 \4@"
+}
+
 function get-java {
-    if [[ "$#" -ne 3 ]]
+    if [[ "$#" -ne 4 ]]
     then
-        echo "Usage: get-java <major> <minor> <build>"
+        echo "Usage: get-java <major> <minor> <build> <key>"
         echo "For example, 8u25-b17 would be 8 25 17 or 7u71-b14 would be 7 71 14"
         return
     fi
@@ -12,8 +23,9 @@ function get-java {
     MAJOR="$1"
     MINOR="$2"
     BUILD="$3"
+    KEY="$4"
     echo "Getting JDK ${MAJOR}u${MINOR}"
-    curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
+    curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
     open jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
     open "/Volumes/JDK ${MAJOR} Update ${MINOR}/JDK ${MAJOR} Update ${MINOR}.pkg"
     sleep 5
@@ -25,11 +37,11 @@ function get-java {
 }
 
 function get-java-for {
-    if [[ "$#" -ne 4 ]]
+    if [[ "$#" -ne 5 ]]
     then
-        echo "Usage: get-java <platform> <major> <minor> <build>"
+        echo "Usage: get-java <platform> <major> <minor> <build> <key>"
         echo "Platform should be one of linux-i586, linux-x64, macosx-x64, windows-i586 or windows-x64"
-        echo "For example, 8u25-b17 would be 8 25 17 or 7u71-b14 would be 7 71 14"
+        echo "For example, 8u121-b13 would be 8 121 13 or 7u71-b14 would be 7 71 14, key is a new component of the download URL."
         return
     fi
 
@@ -37,6 +49,7 @@ function get-java-for {
     MAJOR="$2"
     MINOR="$3"
     BUILD="$4"
+    KEY="$5"
 
     case "${PLATFORM}" in
         "linux-i586")
@@ -61,13 +74,8 @@ function get-java-for {
     esac
 
     echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
-    echo "curl -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
-    curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O "http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
-    # http://download.oracle.com/otn-pub/java/jdk/8u66-b17/jdk-8u66-linux-i586.tar.gz
-    # http://download.oracle.com/otn-pub/java/jdk/8u66-b17/jdk-8u66-linux-x64.tar.gz
-    # http://download.oracle.com/otn-pub/java/jdk/8u66-b17/jdk-8u66-macosx-x64.dmg
-    # http://download.oracle.com/otn-pub/java/jdk/8u66-b18/jdk-8u66-windows-i586.exe
-    # http://download.oracle.com/otn-pub/java/jdk/8u66-b18/jdk-8u66-windows-x64.exe
+    echo "curl -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
+    curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O "http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
     echo
 }
 
