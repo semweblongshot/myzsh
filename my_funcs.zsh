@@ -4,52 +4,85 @@ typeset -a J8_LIST
 function parse-java {
   URL="$1"
 
+  #
+  # http://download.oracle.com/otn-pub/java/jdk/8u141-b15/336fa29ff2bb4ef291e347e091f7f4a7/jdk-8u141-macosx-x64.dmg
+  # http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.tar.gz
   # http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/jdk-8u121-macosx-x64.dmg
+  # http://download.oracle.com/otn-pub/java/jdk/9.0.1+11/jdk-9.0.1_linux-x64_bin.tar.gz
+  #
+  # get-java 8 141 15 336fa29ff2bb4ef291e347e091f7f4a7
+  # get-java 8 151 12 e758a0de34e24606bca991d704f6dcbf
   #                                                                     1       2        3      4          5 (1)   6 (2)   7      8     9
-  echo "Java URL: ${URL}"
-  echo -n "Parsed data: "
-  # echo "${URL}" | sed -e "s@^http://download.oracle.com/otn-pub/java/jdk/\([0-9]*\)u\([0-9]*\)-b\([0-9]*\)/\(.*\)/jdk-\([0-9]*\)u\([0-9]*\)-\(.*\)-\([^.]*\)\.\(.*\)@major:\1 minor:\2 build:\3 key:\4 platform:\7 arch:\8 extension:\9@"
-  echo "${URL}" | sed -e "s@^http://download.oracle.com/otn-pub/java/jdk/\([0-9]*\)u\([0-9]*\)-b\([0-9]*\)/\(.*\)/jdk-\([0-9]*\)u\([0-9]*\)-\(.*\)-\([^.]*\)\.\(.*\)@get-java-for \7-\8 \1 \2 \3 \4@"
+  if echo "${URL}" | grep -q "jdk/8"
+  then
+    echo "Java URL: ${URL}"
+    echo -n "Parsed data: "
+    # echo "${URL}" | sed -e "s@^http://download.oracle.com/otn-pub/java/jdk/\([0-9]*\)u\([0-9]*\)-b\([0-9]*\)/\(.*\)/jdk-\([0-9]*\)u\([0-9]*\)-\(.*\)-\([^.]*\)\.\(.*\)@major:\1 minor:\2 build:\3 key:\4 platform:\7 arch:\8 extension:\9@"
+    echo "${URL}" | sed -e "s@^http://download.oracle.com/otn-pub/java/jdk/\([0-9]*\)u\([0-9]*\)-b\([0-9]*\)/\(.*\)/jdk-\([0-9]*\)u\([0-9]*\)-\(.*\)-\([^.]*\)\.\(.*\)@get-java-for \7-\8 \1 \2 \3 \4@"
+  elif echo "${URL}" | grep -q "jdk/9"
+  then
+    echo "Java 9 URL: ${URL}"
+    echo -n "Parsed data: "
+    echo "${URL}" | sed -e "s@^http://download.oracle.com/otn-pub/java/jdk/\([0-9.]*\)+\([0-9]*\)/jdk-\([0-9.]*\)_\([^.]*\)\.\(.*\)@get-java-for \4 \1 \2@"
+  fi
+
 }
 
 function get-java {
-    if [[ "$#" -ne 4 ]]
+    if [[ "$1" =~ ^8 ]]
     then
-        echo "Usage: get-java <major> <minor> <build> <key>"
-        echo "For example, 8u25-b17 would be 8 25 17 or 7u71-b14 would be 7 71 14"
-        return
-    fi
+      if [[ "$#" -ne 4 ]]
+      then
+          echo "Usage: get-java <major> <minor> <build> <key>"
+          echo "For example, 8u25-b17 would be 8 25 17 or 7u71-b14 would be 7 71 14"
+          return
+      fi
 
-    MAJOR="$1"
-    MINOR="$2"
-    BUILD="$3"
-    KEY="$4"
-    echo "Getting JDK ${MAJOR}u${MINOR}"
-    curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
-    open jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
-    open "/Volumes/JDK ${MAJOR} Update ${MINOR}/JDK ${MAJOR} Update ${MINOR}.pkg"
-    sleep 5
-    echo -n "Hit enter after JDK ${MAJOR} install completes."
-    read IN
-    diskutil unmount $(diskutil list | grep "JDK ${MAJOR}" | awk '{ print $NF }')
-    rm -f jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
-    echo
+      MAJOR="$1"
+      MINOR="$2"
+      BUILD="$3"
+      KEY="$4"
+      echo "Getting JDK ${MAJOR}u${MINOR}"
+      curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
+      open jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
+      open "/Volumes/JDK ${MAJOR} Update ${MINOR}/JDK ${MAJOR} Update ${MINOR}.pkg"
+      sleep 5
+      echo -n "Hit enter after JDK ${MAJOR} install completes."
+      read IN
+      diskutil unmount $(diskutil list | grep "JDK ${MAJOR}" | awk '{ print $NF }')
+      rm -f jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
+      echo
+
+    else
+      if [[ "$#" -ne 2 ]]
+      then
+          echo "Usage: get-java <major> <minor>"
+          echo "For example, 9.0.1+11 would be 9.0.1 11"
+          return
+      fi
+
+      MAJOR="$1"
+      MINOR="$2"
+      echo "Getting JDK ${MAJOR}+${MINOR}"
+      # http://download.oracle.com/otn-pub/java/jdk/9.0.1+11/jdk-9.0.1_linux-x64_bin.tar.gz
+      # http://download.oracle.com/otn-pub/java/jdk/9.0.1+11/jdk-9.0.1_osx-x64_bin.dmg
+      curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/jdk-${MAJOR}_osx-x64_bin.dmg
+      open jdk-${MAJOR}_osx-x64_bin.dmg
+      open "/Volumes/JDK ${MAJOR}/JDK ${MAJOR}.pkg"
+      sleep 5
+      echo -n "Hit enter after JDK ${MAJOR} install completes."
+      read IN
+      diskutil unmount $(diskutil list | grep "JDK ${MAJOR}" | awk '{ print $NF }')
+      rm -f jdk-${MAJOR}u${MINOR}_osx-x64_bin.dmg
+    fi
 }
 
 function get-java-for {
-    if [[ "$#" -ne 5 ]]
-    then
-        echo "Usage: get-java <platform> <major> <minor> <build> <key>"
-        echo "Platform should be one of linux-i586, linux-x64, macosx-x64, windows-i586 or windows-x64"
-        echo "For example, 8u121-b13 would be 8 121 13 or 7u71-b14 would be 7 71 14, key is a new component of the download URL."
-        return
-    fi
-
     PLATFORM="$1"
-    MAJOR="$2"
-    MINOR="$3"
-    BUILD="$4"
-    KEY="$5"
+    # echo "Usage: get-java <platform> <major> <minor> <build> <key>"
+    # echo "Platform should be one of linux-i586, linux-x64, macosx-x64, windows-i586 or windows-x64"
+    # echo "For example, 8u121-b13 would be 8 121 13 or 7u71-b14 would be 7 71 14, key is a new component of the download URL."
+    # return
 
     case "${PLATFORM}" in
         "linux-i586")
@@ -73,10 +106,24 @@ function get-java-for {
             ;;
     esac
 
-    echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
-    echo "curl -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
-    curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O "http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
-    echo
+    if [[ "$#" -eq 5 ]]
+    then
+      MAJOR="$2"
+      MINOR="$3"
+      BUILD="$4"
+      KEY="$5"
+
+      echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
+      echo "curl -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
+      curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O "http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
+      echo
+    elif [[ "$#" -eq 3 ]]
+    then
+      echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
+      echo "curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/jdk-${MAJOR}_${PLATFORM}_bin.${SUFFIX}"
+      curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/jdk-${MAJOR}_${PLATFORM}_bin.${SUFFIX}
+    fi
+
 }
 
 function echo-java-for {
