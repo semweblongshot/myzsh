@@ -1,5 +1,6 @@
 typeset -a J7_LIST
 typeset -a J8_LIST
+typeset -a J9_LIST
 
 function parse-java {
   URL="$1"
@@ -170,16 +171,17 @@ function echo-java-for {
 function getJVMs {
   pushd /Library/Java/JavaVirtualMachines/ &>/dev/null
   I=1
-  for DIR in $(ls -1rtd jdk1.8*)
+  for DIR in $(ls -1rtd jdk*9*)
   do
-    local JVM=$(echo ${DIR} | sed -e 's/^jdk//' -e 's/.jdk$//')
-    J8_LIST[I]=${JVM}
+    local JVM=$(echo ${DIR} | sed -e 's/-//g' -e 's/^jdk//' -e 's/.jdk$//')
+    J9_LIST[I]=${JVM}
     (( I += 1 ))
   done
   popd&>/dev/null
 
   # echo "Latest Java 7: ${J7_LIST[-1]} from ${J7_LIST}"
-  echo "Lastest Java: ${J8_LIST[-1]} from ${J8_LIST}"
+  # echo "Lastest Java: ${J8_LIST[-1]} from ${J8_LIST}"
+  echo "Lastest Java: ${J9_LIST[-1]} from ${J9_LIST}"
 }
 
 function updateJava {
@@ -192,6 +194,9 @@ function updateJava {
   elif [[ "${DESIRED}" == "1.8" ]]
   then
     JVM=${J8_LIST[-1]}
+  elif [[ "${DESIRED}" == "1.9" ]]
+  then
+    JVM=${J9_LIST[-1]}
   else
     echo "Unknown JVM version: ${DESIRED}"
     return
