@@ -1,5 +1,6 @@
 typeset -a J7_LIST
 typeset -a J8_LIST
+typeset -a J9_LIST
 
 function parse-java {
   URL="$1"
@@ -73,7 +74,7 @@ function get-java {
       echo -n "Hit enter after JDK ${MAJOR} install completes."
       read IN
       diskutil unmount $(diskutil list | grep "JDK ${MAJOR}" | awk '{ print $NF }')
-      rm -f jdk-${MAJOR}u${MINOR}_osx-x64_bin.dmg
+      rm -f jdk-${MAJOR}_osx-x64_bin.dmg
     fi
 }
 
@@ -170,16 +171,37 @@ function echo-java-for {
 function getJVMs {
   pushd /Library/Java/JavaVirtualMachines/ &>/dev/null
   I=1
-  for DIR in $(ls -1rtd jdk1.8*)
-  do
-    local JVM=$(echo ${DIR} | sed -e 's/^jdk//' -e 's/.jdk$//')
-    J8_LIST[I]=${JVM}
-    (( I += 1 ))
-  done
+  N8=$(find . -maxdepth 1 -type d -a -name jdk1.8\* | wc -l)
+  if [[ ${N8} -gt 0 ]]
+  then
+    for DIR in $(find . -maxdepth 1 -type d -a -nae jdk1.8\*)
+    do
+      local JVM=$(echo ${DIR} | sed -e 's/^jdk//' -e 's/.jdk$//' -e 's/\.\///')
+      J8_LIST[I]=${JVM}
+      (( I += 1 ))
+    done
+  fi
+  I=1
+  N9=$(find . -maxdepth 1 -type d -a -name jdk-9\* | wc -l)
+  if [[ ${N9} -gt 0 ]]
+  then
+    for DIR in $(find . -maxdepth 1 -type d -a -name jdk-9\*)
+    do
+      local JVM=$(echo ${DIR} | sed -e 's/^jdk-//' -e 's/.jdk$//' -e 's/\.\///')
+      J9_LIST[I]=${JVM}
+      (( I += 1 ))
+    done
+  fi
   popd&>/dev/null
 
-  # echo "Latest Java 7: ${J7_LIST[-1]} from ${J7_LIST}"
-  echo "Lastest Java: ${J8_LIST[-1]} from ${J8_LIST}"
+  if [[ -n ${J8_LIST} ]]
+  then
+    echo "Lastest Java 8: ${J8_LIST[-1]} from ${J8_LIST}"
+  fi
+  if [[ -n ${J9_LIST} ]]
+  then
+    echo "Lastest Java 9: ${J9_LIST[-1]} from ${J9_LIST}"
+  fi
 }
 
 function updateJava {
@@ -192,6 +214,9 @@ function updateJava {
   elif [[ "${DESIRED}" == "1.8" ]]
   then
     JVM=${J8_LIST[-1]}
+  elif [[ "${DESIRED}" == "1.9" ]]
+  then
+    JVM=${J9_LIST[-1]}
   else
     echo "Unknown JVM version: ${DESIRED}"
     return
