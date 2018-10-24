@@ -1,6 +1,8 @@
 typeset -a J7_LIST
 typeset -a J8_LIST
 typeset -a J9_LIST
+typeset -a J10_LIST
+typeset -a J11_LIST
 
 function parse-java {
   URL="$1"
@@ -127,22 +129,10 @@ function get-java-for {
       echo "curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/jdk-${MAJOR}_${PLATFORM}_bin.${SUFFIX}"
       curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/jdk-${MAJOR}_${PLATFORM}_bin.${SUFFIX}
     fi
-
 }
 
 function echo-java-for {
-    if [[ "$#" -ne 4 ]]
-    then
-        echo "Usage: get-java <platform> <major> <minor> <build>"
-        echo "Platform should be one of linux-i586, linux-x64, macosx-x64, windows-i586 or windows-x64"
-        echo "For example, 8u25-b17 would be 8 25 17 or 7u71-b14 would be 7 71 14"
-        return
-    fi
-
     PLATFORM="$1"
-    MAJOR="$2"
-    MINOR="$3"
-    BUILD="$4"
 
     case "${PLATFORM}" in
         "linux-i586")
@@ -166,9 +156,21 @@ function echo-java-for {
             ;;
     esac
 
-    echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
-    echo "curl -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
-    echo
+    if [[ "$#" -eq 5 ]]
+    then
+      MAJOR="$2"
+      MINOR="$3"
+      BUILD="$4"
+      KEY="$5"
+
+      echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
+      echo "curl -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O \"http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}\""
+      echo
+    elif [[ "$#" -eq 3 ]]
+    then
+      echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
+      echo "curl -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O \"http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/jdk-${MAJOR}_${PLATFORM}_bin.${SUFFIX}\""
+    fi
 }
 
 function getJVMs {
@@ -177,7 +179,7 @@ function getJVMs {
   N8=$(find . -maxdepth 1 -type d -a -name jdk1.8\* | wc -l)
   if [[ ${N8} -gt 0 ]]
   then
-    for DIR in $(find . -maxdepth 1 -type d -a -nae jdk1.8\*)
+    for DIR in $(find . -maxdepth 1 -type d -a -nae jdk1.8\* | sort -n)
     do
       local JVM=$(echo ${DIR} | sed -e 's/^jdk//' -e 's/.jdk$//' -e 's/\.\///')
       J8_LIST[I]=${JVM}
@@ -189,7 +191,7 @@ function getJVMs {
   N9=$(find . -maxdepth 1 -type d -a -name jdk-9\* | wc -l)
   if [[ ${N9} -gt 0 ]]
   then
-    for DIR in $(find . -maxdepth 1 -type d -a -name jdk-9\*)
+    for DIR in $(find . -maxdepth 1 -type d -a -name jdk-9\* | sort -n)
     do
       local JVM=$(echo ${DIR} | sed -e 's/^jdk-//' -e 's/.jdk$//' -e 's/\.\///')
       J9_LIST[I]=${JVM}
@@ -199,12 +201,24 @@ function getJVMs {
 
   I=1
   N10=$(find . -maxdepth 1 -type d -a -name jdk-10\* | wc -l)
-  if [[ ${N9} -gt 0 ]]
+  if [[ ${N10} -gt 0 ]]
   then
-    for DIR in $(find . -maxdepth 1 -type d -a -name jdk-10\*)
+    for DIR in $(find . -maxdepth 1 -type d -a -name jdk-10\* | sort -n)
     do
       local JVM=$(echo ${DIR} | sed -e 's/^jdk-//' -e 's/.jdk$//' -e 's/\.\///')
       J10_LIST[I]=${JVM}
+      (( I += 1 ))
+    done
+  fi
+
+  I=1
+  N11=$(find . -maxdepth 1 -type d -a -name jdk-11\* | wc -l)
+  if [[ ${N11} -gt 0 ]]
+  then
+    for DIR in $(find . -maxdepth 1 -type d -a -name jdk-11\* | sort -n)
+    do
+      local JVM=$(echo ${DIR} | sed -e 's/^jdk-//' -e 's/.jdk$//' -e 's/\.\///')
+      J11_LIST[I]=${JVM}
       (( I += 1 ))
     done
   fi
@@ -212,15 +226,19 @@ function getJVMs {
 
   if [[ -n ${J8_LIST} ]]
   then
-    echo "Lastest Java 8: ${J8_LIST[-1]} from ${J8_LIST}"
+    echo "Latest Java 8: ${J8_LIST[-1]} from ${J8_LIST}"
   fi
   if [[ -n ${J9_LIST} ]]
   then
-    echo "Lastest Java 9: ${J9_LIST[-1]} from ${J9_LIST}"
+    echo "Latest Java 9: ${J9_LIST[-1]} from ${J9_LIST}"
   fi
   if [[ -n ${J10_LIST} ]]
   then
-    echo "Lastest Java 10: ${J10_LIST[-1]} from ${J10_LIST}"
+    echo "Latest Java 10: ${J10_LIST[-1]} from ${J10_LIST}"
+  fi
+  if [[ -n ${J11_LIST} ]]
+  then
+    echo "Latest Java 11: ${J11_LIST[-1]} from ${J11_LIST}"
   fi
 }
 
@@ -240,6 +258,9 @@ function updateJava {
   elif [[ "${DESIRED}" == "10" ]]
   then
     JVM=${J10_LIST[-1]}
+  elif [[ "${DESIRED}" == "11" ]]
+  then
+    JVM=${J11_LIST[-1]}
   else
     echo "Unknown JVM version: ${DESIRED}"
     return
@@ -327,7 +348,6 @@ syspip(){
 function bup(){
   echo "Updating the brew formulas"
   brew update && brew upgrade && brew cleanup
-  brew cask cleanup
 }
 
 function cleanupdocker(){
