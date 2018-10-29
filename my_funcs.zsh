@@ -174,7 +174,6 @@ function echo-java-for {
 }
 
 function getJVMs {
-  set -x
   pushd /Library/Java/JavaVirtualMachines/ &>/dev/null
   I=1
   N8=$(find . -maxdepth 1 -type d -a -name jdk1.8\* | wc -l)
@@ -224,7 +223,6 @@ function getJVMs {
       (( I += 1 ))
     done
   fi
-  set +x
   popd&>/dev/null
 
   if [[ -n ${J8_LIST} ]]
