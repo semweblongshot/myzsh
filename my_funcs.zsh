@@ -174,6 +174,7 @@ function echo-java-for {
 }
 
 function getJVMs {
+  set -x
   pushd /Library/Java/JavaVirtualMachines/ &>/dev/null
   I=1
   N8=$(find . -maxdepth 1 -type d -a -name jdk1.8\* | wc -l)
@@ -181,7 +182,8 @@ function getJVMs {
   then
     for DIR in $(find . -maxdepth 1 -type d -a -name jdk1.8\* | sort -n)
     do
-      local JVM=$(echo ${DIR} | sed -e 's/^jdk//' -e 's/.jdk$//' -e 's/\.\///')
+      # jdk1.8.0_192.jdk
+      local JVM=$(echo ${DIR} | sed -e 's/\.\///' -e 's/^jdk//' -e 's/.jdk$//' )
       J8_LIST[I]=${JVM}
       (( I += 1 ))
     done
@@ -193,7 +195,7 @@ function getJVMs {
   then
     for DIR in $(find . -maxdepth 1 -type d -a -name jdk-9\* | sort -n)
     do
-      local JVM=$(echo ${DIR} | sed -e 's/^jdk-//' -e 's/.jdk$//' -e 's/\.\///')
+      local JVM=$(echo ${DIR} | sed -e 's/\.\///' -e 's/^jdk-//' -e 's/.jdk$//' )
       J9_LIST[I]=${JVM}
       (( I += 1 ))
     done
@@ -205,7 +207,7 @@ function getJVMs {
   then
     for DIR in $(find . -maxdepth 1 -type d -a -name jdk-10\* | sort -n)
     do
-      local JVM=$(echo ${DIR} | sed -e 's/^jdk-//' -e 's/.jdk$//' -e 's/\.\///')
+      local JVM=$(echo ${DIR} | sed -e 's/\.\///' -e 's/^jdk-//' -e 's/.jdk$//')
       J10_LIST[I]=${JVM}
       (( I += 1 ))
     done
@@ -217,11 +219,12 @@ function getJVMs {
   then
     for DIR in $(find . -maxdepth 1 -type d -a -name jdk-11\* | sort -n)
     do
-      local JVM=$(echo ${DIR} | sed -e 's/^jdk-//' -e 's/.jdk$//' -e 's/\.\///')
+      local JVM=$(echo ${DIR} | sed -e 's/\.\///' -e 's/^jdk-//' -e 's/.jdk$//' )
       J11_LIST[I]=${JVM}
       (( I += 1 ))
     done
   fi
+  set +x
   popd&>/dev/null
 
   if [[ -n ${J8_LIST} ]]
