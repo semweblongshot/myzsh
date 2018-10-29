@@ -179,7 +179,7 @@ function getJVMs {
   N8=$(find . -maxdepth 1 -type d -a -name jdk1.8\* | wc -l)
   if [[ ${N8} -gt 0 ]]
   then
-    for DIR in $(find . -maxdepth 1 -type d -a -nae jdk1.8\* | sort -n)
+    for DIR in $(find . -maxdepth 1 -type d -a -name jdk1.8\* | sort -n)
     do
       local JVM=$(echo ${DIR} | sed -e 's/^jdk//' -e 's/.jdk$//' -e 's/\.\///')
       J8_LIST[I]=${JVM}
