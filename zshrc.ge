@@ -1,3 +1,24 @@
+# set empty DYLD_INSERT_LIBRARIES to enable docker-machine to work
+case $- in
+  *i*)
+    DYLD_INSERT_LIBRARIES=
+    ;;
+  *)
+    ;;
+esac
+
+init-chef() {
+    eval "$(chef shell-init zsh)"
+}
+
+h2d(){
+    echo "ibase=16; $@"|bc
+}
+
+d2h(){
+    echo "obase=16; $@"|bc
+}
+
 function pushtoitunes {
   for FILE in $@
   do
@@ -6,13 +27,15 @@ function pushtoitunes {
 }
 
 function ckmedia {
-  for FILE in $@
-  do
-    echo ${FILE}:
-    mediainfo ${FILE} | grep -i -e width -e height -e chann -e dura -e ^Description
-    echo
-  done
+    for FILE in $@
+    do
+        echo ${FILE}:
+        mediainfo ${FILE} | grep -i -e width -e height -e chann -e dura -e ^Description -e ^Text
+        echo
+    done
 }
+
+. ${HOME}/bin/proxy.sh
 
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/Workspace/oh-my-zsh
@@ -79,19 +102,31 @@ SPACESHIP_PROMPT_ORDER=(
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(mvn sublime rvm ruby python brew git osx)
+plugins=(ruby rbenv docker docker-compose mvn sublime brew git-flow git gradle osx vagrant vi-mode)
 
 source $ZSH/oh-my-zsh.sh
+source /usr/local/share/zsh/site-functions/_aws
+source /usr/local/share/chruby/chruby.sh
+source /usr/local/share/chruby/auto.sh
+
+# autoenv
+source ${HOME}/Workspace/zsh-autoenv/autoenv.zsh
 
 # Customize to your needs...
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
+
+# Scalr keys (AWS too?)
+source ${HOME}/.scalr
 
 # source my functions
 source ${HOME}/Workspace/myzsh/my_funcs.zsh
 getJVMs
+updateJava 11
 
 # vi mode please
 set -o vi
 bindkey -v
+alias vi='/usr/local/bin/vim'
 
 # Super user
 alias _='sudo '
@@ -99,12 +134,21 @@ alias _='sudo '
 # Show history
 alias h='fc -l 1'
 alias j='jobs'
+alias 1='fg %1'
+alias 2='fg %2'
+alias 3='fg %3'
+alias 4='fg %4'
+alias 5='fg %5'
+alias 6='fg %6'
 
 # List direcory contents
 alias l='ls -l'
 alias la='ls -la'
 alias a='ls -a'
 alias sl=ls # often screw this up
+
+# SSO
+export SSO=212559393
 
 # LS colors
 export CLICOLOR="true"
@@ -115,14 +159,31 @@ export PAGER=less
 export LESS='-idqsMeP?f%f :stdin .?e(EOF) ?xNEXT\: %x.:?ltLine %lt .?bB(%bB?s/%s) :) .?pB%pB\% .?m(file %i of %m) ....%t'
 export GIT_PAGER='less -FRX'
 
+# MANPATH
+MANPATH="/usr/local/opt/findutils/libexec/gnuman:/usr/local/opt/coreutils/libexec/gnuman:$MANPATH"
+
 # CDPATH
-export CDPATH=.:${HOME}
+export CDPATH=.:${HOME}:${HOME}/Workspace:${HOME}/Workspace/p4
 
 # PATH
-export PATH=${HOME}/bin:/usr/local/bin:.:${PATH}
+export PATH=${HOME}/bin:/usr/local/opt/findutils/libexec/gnubin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:.:/sbin:/usr/sbin:/usr/bin:/bin
+export EDITOR=vim
 
 export JAVA_HOME=$(/usr/libexec/java_home)
-addPath -b -e JAVA_HOME
+addPath -e JAVA_HOME
 
-# personal usb drive
-addPath -b /Volumes/personal/bin 
+# export MAVEN_HOME=/usr/local/apache-maven-3.3.3
+export MAVEN_HOME=/usr/local/apache-maven-3.2.5
+addPath -e MAVEN_HOME
+
+# grunt for node
+addPath ${HOME}/node_modules/grunt-cli/bin
+
+# groovy home
+export GROOVY_HOME=/usr/local/opt/groovy/libexec
+
+export NIX="de559393"
+
+alias hc-win-tunnel='ssh -v -N -L 3389:10.231.15.222:3389 gecloud@10.231.15.212 -i ~/.ssh/ctt-hc-devops.pem &'
+source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source <(kubectl completion zsh)
