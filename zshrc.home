@@ -15,7 +15,7 @@ function ckmedia {
 }
 
 # Path to your oh-my-zsh configuration.
-ZSH=$HOME/Workspace/oh-my-zsh
+ZSH=$HOME/scm/oh-my-zsh
 
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
@@ -86,8 +86,9 @@ source $ZSH/oh-my-zsh.sh
 # Customize to your needs...
 
 # source my functions
-source ${HOME}/Workspace/myzsh/my_funcs.zsh
+source ${HOME}/scm/myzsh/my_funcs.zsh
 getJVMs
+updateJava 11
 
 # vi mode please
 set -o vi
