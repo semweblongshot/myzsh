@@ -3,6 +3,7 @@ typeset -a J8_LIST
 typeset -a J9_LIST
 typeset -a J10_LIST
 typeset -a J11_LIST
+typeset -a J12_LIST
 
 function parse-java {
   URL="$1"
@@ -289,6 +290,9 @@ function updateJava {
   elif [[ "${DESIRED}" == "11" ]]
   then
     JVM=${J11_LIST[-1]}
+  elif [[ "${DESIRED}" == "12" ]]
+  then
+    JVM=${J12_LIST[-1]}
   else
     echo "Unknown JVM version: ${DESIRED}"
     return
