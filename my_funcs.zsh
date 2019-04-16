@@ -12,6 +12,16 @@ function parse-java {
   # http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.tar.gz
   # http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/jdk-8u121-macosx-x64.dmg
   # http://download.oracle.com/otn-pub/java/jdk/9.0.1+11/jdk-9.0.1_linux-x64_bin.tar.gz
+  # https://download.oracle.com/otn-pub/java/jdk/8u201-b09/42970487e3af4f5aa5bca3f542482c60/jdk-8u201-linux-x64.tar.gz
+  # https://download.oracle.com/otn-pub/java/jdk/8u202-b08/1961070e4c9b4e26a04e7f5a083f551e/jdk-8u202-linux-x64.tar.gz
+  # https://download.oracle.com/otn-pub/java/jdk/8u202-b08/1961070e4c9b4e26a04e7f5a083f551e/jdk-8u202-macosx-x64.dmg
+  # http://download.oracle.com/otn-pub/java/jdk/11.0.2+9/f51449fcd52f4d52b93a989c5c56ed3c/jdk-11.0.2_linux-x64_bin.tar.gz
+  # http://download.oracle.com/otn-pub/java/jdk/11.0.2+9/f51449fcd52f4d52b93a989c5c56ed3c/jdk-11.0.2_osx-x64_bin.dmg
+
+# wget --no-check-certificate -c --header "Cookie: oraclelicense=accept-securebackup-cookie" \
+# http://download.oracle.com/otn-pub/java/jdk/11+28/55eed80b163941c8885ad9298e6d786a/jdk-11_linux-x64_bin.tar.gz
+
+
   #
   # get-java 8 141 15 336fa29ff2bb4ef291e347e091f7f4a7
   # get-java 8 151 12 e758a0de34e24606bca991d704f6dcbf
@@ -22,13 +32,11 @@ function parse-java {
     echo -n "Parsed data: "
     # echo "${URL}" | sed -e "s@^http://download.oracle.com/otn-pub/java/jdk/\([0-9]*\)u\([0-9]*\)-b\([0-9]*\)/\(.*\)/jdk-\([0-9]*\)u\([0-9]*\)-\(.*\)-\([^.]*\)\.\(.*\)@major:\1 minor:\2 build:\3 key:\4 platform:\7 arch:\8 extension:\9@"
     echo "${URL}" | sed -e "s@^http://download.oracle.com/otn-pub/java/jdk/\([0-9]*\)u\([0-9]*\)-b\([0-9]*\)/\(.*\)/jdk-\([0-9]*\)u\([0-9]*\)-\(.*\)-\([^.]*\)\.\(.*\)@get-java-for \7-\8 \1 \2 \3 \4@"
-  elif echo "${URL}" | grep -q "jdk/9"
-  then
-    echo "Java 9 URL: ${URL}"
+  else
+    echo "Java URL: ${URL}"
     echo -n "Parsed data: "
-    echo "${URL}" | sed -e "s@^http://download.oracle.com/otn-pub/java/jdk/\([0-9.]*\)+\([0-9]*\)/jdk-\([0-9.]*\)_\([^.]*\)\.\(.*\)@get-java-for \4 \1 \2@"
+    echo "${URL}" | sed -e "s/_bin//" -e "s@^http://download.oracle.com/otn-pub/java/jdk/\([0-9.]*\)+\([0-9]*\)/\([a-zA-Z0-9]*\)/jdk-\([0-9.]*\)_\([^.]*\)\.\(.*\)@get-java-for \5 \1 \2 \3@"
   fi
-
 }
 
 function get-java {
@@ -46,7 +54,7 @@ function get-java {
       BUILD="$3"
       KEY="$4"
       echo "Getting JDK ${MAJOR}u${MINOR}"
-      curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
+      curl -j -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
       open jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
       open "/Volumes/JDK ${MAJOR} Update ${MINOR}/JDK ${MAJOR} Update ${MINOR}.pkg"
       sleep 5
@@ -71,8 +79,8 @@ function get-java {
       # http://download.oracle.com/otn-pub/java/jdk/9.0.1+11/jdk-9.0.1_linux-x64_bin.tar.gz
       # http://download.oracle.com/otn-pub/java/jdk/9.0.1+11/jdk-9.0.1_osx-x64_bin.dmg
       # http://download.oracle.com/otn-pub/java/jdk/9.0.4+11/c2514751926b4512b076cc82f959763f/jdk-9.0.4_osx-x64_bin.dmg
-      echo "Running: curl -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/${KEY}/jdk-${MAJOR}_osx-x64_bin.dmg"
-      curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/${KEY}/jdk-${MAJOR}_osx-x64_bin.dmg
+      echo "Running: curl -j -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/${KEY}/jdk-${MAJOR}_osx-x64_bin.dmg"
+      curl -j -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/${KEY}/jdk-${MAJOR}_osx-x64_bin.dmg
       open jdk-${MAJOR}_osx-x64_bin.dmg
       open "/Volumes/JDK ${MAJOR}/JDK ${MAJOR}.pkg"
       sleep 5
@@ -120,14 +128,17 @@ function get-java-for {
       KEY="$5"
 
       echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
-      echo "curl -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
-      curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O "http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
+      echo "curl -j -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
+      curl -j -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O "http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
       echo
-    elif [[ "$#" -eq 3 ]]
+    elif [[ "$#" -eq 4 ]]
     then
-      echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
-      echo "curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/jdk-${MAJOR}_${PLATFORM}_bin.${SUFFIX}"
-      curl -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/jdk-${MAJOR}_${PLATFORM}_bin.${SUFFIX}
+      MAJOR="$2"
+      MINOR="$3"
+      KEY="$4"
+      echo "Getting JDK ${MAJOR}+${MINOR} for ${PLATFORM}"
+      echo "curl -j -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/jdk-${MAJOR}_${PLATFORM}_bin.${SUFFIX}"
+      curl -j -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/jdk-${MAJOR}_${PLATFORM}_bin.${SUFFIX}
     fi
 }
 
@@ -164,12 +175,12 @@ function echo-java-for {
       KEY="$5"
 
       echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
-      echo "curl -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O \"http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}\""
+      echo "curl -j -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O \"http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}\""
       echo
     elif [[ "$#" -eq 3 ]]
     then
       echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
-      echo "curl -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O \"http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/jdk-${MAJOR}_${PLATFORM}_bin.${SUFFIX}\""
+      echo "curl -j -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O \"http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/jdk-${MAJOR}_${PLATFORM}_bin.${SUFFIX}\""
     fi
 }
 
@@ -223,6 +234,18 @@ function getJVMs {
       (( I += 1 ))
     done
   fi
+
+  I=1
+  N12=$(find . -maxdepth 1 -type d -a -name jdk-12\* | wc -l)
+  if [[ ${N12} -gt 0 ]]
+  then
+    for DIR in $(find . -maxdepth 1 -type d -a -name jdk-12\* | sort -n)
+    do
+      local JVM=$(echo ${DIR} | sed -e 's/\.\///' -e 's/^jdk-//' -e 's/.jdk$//' )
+      J12_LIST[I]=${JVM}
+      (( I += 1 ))
+    done
+  fi
   popd&>/dev/null
 
   if [[ -n ${J8_LIST} ]]
@@ -240,6 +263,10 @@ function getJVMs {
   if [[ -n ${J11_LIST} ]]
   then
     echo "Latest Java 11: ${J11_LIST[-1]} from ${J11_LIST}"
+  fi
+  if [[ -n ${J12_LIST} ]]
+  then
+    echo "Latest Java 12: ${J12_LIST[-1]} from ${J12_LIST}"
   fi
 }
 
