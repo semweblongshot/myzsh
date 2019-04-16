@@ -304,9 +304,15 @@ function updateJava {
   # echo "Updated PATH to remove current JAVA_HOME: ${NEWPATH}"
 
   # set new JAVA_HOME and update path
-  NEWHOME="/Library/Java/JavaVirtualMachines/jdk${JVM}.jdk/Contents/Home"
-  NEWPATH="${NEWHOME}/bin:${NEWPATH}"
-  # echo "Updated PATH to include ${JVM}: ${NEWPATH}"
+  if [[ "${DESIRED}" == "1.7" ]] || [[ "${DESIRED}" == "1.8" ]]
+  then
+    NEWHOME="/Library/Java/JavaVirtualMachines/jdk${JVM}.jdk/Contents/Home"
+    NEWPATH="${NEWHOME}/bin:${NEWPATH}"
+    # echo "Updated PATH to include ${JVM}: ${NEWPATH}"
+  else
+    NEWHOME="/Library/Java/JavaVirtualMachines/jdk-${JVM}.jdk/Contents/Home"
+    NEWPATH="${NEWHOME}/bin:${NEWPATH}"
+  fi
 
   export JAVA_HOME=${NEWHOME}
   export PATH=${NEWPATH}
