@@ -75,3 +75,10 @@ au! BufNewFile,BufRead */conf/* set filetype=sh
 
 " json format
 map  :%!python -m json.tool
+" print date
+map gd :r! date +"\%a \%b \%d \%Y"<CR>
+map nd :r! date -v+1d +"\%a \%b \%d \%Y"<CR>
+" check off a todo item and time stamp it
+map gg ^rx: <Esc>:r! date +" [\%H:\%M]"<ENTER>kJA<Esc>$
+" create a new todo item
+map gt o  _
