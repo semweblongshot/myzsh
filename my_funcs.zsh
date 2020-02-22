@@ -247,6 +247,18 @@ function getJVMs {
       (( I += 1 ))
     done
   fi
+
+  I=1
+  N13=$(find . -maxdepth 1 -type d -a -name jdk-13\* | wc -l)
+  if [[ ${N13} -gt 0 ]]
+  then
+    for DIR in $(find . -maxdepth 1 -type d -a -name jdk-13\* | sort -n)
+    do
+      local JVM=$(echo ${DIR} | sed -e 's/\.\///' -e 's/^jdk-//' -e 's/.jdk$//' )
+      J13_LIST[I]=${JVM}
+      (( I += 1 ))
+    done
+  fi
   popd&>/dev/null
 
   if [[ -n ${J8_LIST} ]]
@@ -268,6 +280,10 @@ function getJVMs {
   if [[ -n ${J12_LIST} ]]
   then
     echo "Latest Java 12: ${J12_LIST[-1]} from ${J12_LIST}"
+  fi
+  if [[ -n ${J13_LIST} ]]
+  then
+    echo "Latest Java 13: ${J13_LIST[-1]} from ${J13_LIST}"
   fi
 }
 
@@ -293,6 +309,9 @@ function updateJava {
   elif [[ "${DESIRED}" == "12" ]]
   then
     JVM=${J12_LIST[-1]}
+  elif [[ "${DESIRED}" == "13" ]]
+  then
+    JVM=${J13_LIST[-1]}
   else
     echo "Unknown JVM version: ${DESIRED}"
     return
