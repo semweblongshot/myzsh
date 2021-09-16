@@ -1,7 +1,7 @@
 " gotta start things off right
 set nocompatible
 
-call pathogen#infect()
+" call pathogen#infect()
 
 filetype on
 filetype plugin on
@@ -68,7 +68,7 @@ let g:airline_powerline_fonts = 1
 set guifont=Sauce_Code_Powerline:h11
 
 syntax on
-source ~/.vim/plugin/matchit.vim
+" source ~/.vim/plugin/matchit.vim
 
 " try to auto set conf files to shell syntax
 au! BufNewFile,BufRead */conf/* set filetype=sh
