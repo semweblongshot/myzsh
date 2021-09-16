@@ -4,186 +4,11 @@ typeset -a J9_LIST
 typeset -a J10_LIST
 typeset -a J11_LIST
 typeset -a J12_LIST
-
-function parse-java {
-  URL="$1"
-
-  #
-  # http://download.oracle.com/otn-pub/java/jdk/8u141-b15/336fa29ff2bb4ef291e347e091f7f4a7/jdk-8u141-macosx-x64.dmg
-  # http://download.oracle.com/otn-pub/java/jdk/8u151-b12/e758a0de34e24606bca991d704f6dcbf/jdk-8u151-linux-x64.tar.gz
-  # http://download.oracle.com/otn-pub/java/jdk/8u121-b13/e9e7ea248e2c4826b92b3f075a80e441/jdk-8u121-macosx-x64.dmg
-  # http://download.oracle.com/otn-pub/java/jdk/9.0.1+11/jdk-9.0.1_linux-x64_bin.tar.gz
-  # https://download.oracle.com/otn-pub/java/jdk/8u201-b09/42970487e3af4f5aa5bca3f542482c60/jdk-8u201-linux-x64.tar.gz
-  # https://download.oracle.com/otn-pub/java/jdk/8u202-b08/1961070e4c9b4e26a04e7f5a083f551e/jdk-8u202-linux-x64.tar.gz
-  # https://download.oracle.com/otn-pub/java/jdk/8u202-b08/1961070e4c9b4e26a04e7f5a083f551e/jdk-8u202-macosx-x64.dmg
-  # http://download.oracle.com/otn-pub/java/jdk/11.0.2+9/f51449fcd52f4d52b93a989c5c56ed3c/jdk-11.0.2_linux-x64_bin.tar.gz
-  # http://download.oracle.com/otn-pub/java/jdk/11.0.2+9/f51449fcd52f4d52b93a989c5c56ed3c/jdk-11.0.2_osx-x64_bin.dmg
-
-# wget --no-check-certificate -c --header "Cookie: oraclelicense=accept-securebackup-cookie" \
-# http://download.oracle.com/otn-pub/java/jdk/11+28/55eed80b163941c8885ad9298e6d786a/jdk-11_linux-x64_bin.tar.gz
-
-
-  #
-  # get-java 8 141 15 336fa29ff2bb4ef291e347e091f7f4a7
-  # get-java 8 151 12 e758a0de34e24606bca991d704f6dcbf
-  #                                                                     1       2        3      4          5 (1)   6 (2)   7      8     9
-  if echo "${URL}" | grep -q "jdk/8"
-  then
-    echo "Java URL: ${URL}"
-    echo -n "Parsed data: "
-    # echo "${URL}" | sed -e "s@^http://download.oracle.com/otn-pub/java/jdk/\([0-9]*\)u\([0-9]*\)-b\([0-9]*\)/\(.*\)/jdk-\([0-9]*\)u\([0-9]*\)-\(.*\)-\([^.]*\)\.\(.*\)@major:\1 minor:\2 build:\3 key:\4 platform:\7 arch:\8 extension:\9@"
-    echo "${URL}" | sed -e "s@^http://download.oracle.com/otn-pub/java/jdk/\([0-9]*\)u\([0-9]*\)-b\([0-9]*\)/\(.*\)/jdk-\([0-9]*\)u\([0-9]*\)-\(.*\)-\([^.]*\)\.\(.*\)@get-java-for \7-\8 \1 \2 \3 \4@"
-  else
-    echo "Java URL: ${URL}"
-    echo -n "Parsed data: "
-    echo "${URL}" | sed -e "s/_bin//" -e "s@^http://download.oracle.com/otn-pub/java/jdk/\([0-9.]*\)+\([0-9]*\)/\([a-zA-Z0-9]*\)/jdk-\([0-9.]*\)_\([^.]*\)\.\(.*\)@get-java-for \5 \1 \2 \3@"
-  fi
-}
-
-function get-java {
-    if [[ "$1" =~ ^8 ]]
-    then
-      if [[ "$#" -ne 4 ]]
-      then
-          echo "Usage: get-java <major> <minor> <build> <key>"
-          echo "For example, 8u25-b17 would be 8 25 17 or 7u71-b14 would be 7 71 14"
-          return
-      fi
-
-      MAJOR="$1"
-      MINOR="$2"
-      BUILD="$3"
-      KEY="$4"
-      echo "Getting JDK ${MAJOR}u${MINOR}"
-      curl -j -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
-      open jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
-      open "/Volumes/JDK ${MAJOR} Update ${MINOR}/JDK ${MAJOR} Update ${MINOR}.pkg"
-      sleep 5
-      echo -n "Hit enter after JDK ${MAJOR} install completes."
-      read IN
-      diskutil unmount $(diskutil list | grep "JDK ${MAJOR}" | awk '{ print $NF }')
-      rm -f jdk-${MAJOR}u${MINOR}-macosx-x64.dmg
-      echo
-
-    else
-      if [[ "$#" -ne 3 ]]
-      then
-          echo "Usage: get-java <major> <minor> <key>"
-          echo "For example, 9.0.1+11 would be 9.0.1 11"
-          return
-      fi
-
-      MAJOR="$1"
-      MINOR="$2"
-      KEY="$3"
-      echo "Getting JDK ${MAJOR}+${MINOR} (key: ${KEY})"
-      # http://download.oracle.com/otn-pub/java/jdk/9.0.1+11/jdk-9.0.1_linux-x64_bin.tar.gz
-      # http://download.oracle.com/otn-pub/java/jdk/9.0.1+11/jdk-9.0.1_osx-x64_bin.dmg
-      # http://download.oracle.com/otn-pub/java/jdk/9.0.4+11/c2514751926b4512b076cc82f959763f/jdk-9.0.4_osx-x64_bin.dmg
-      echo "Running: curl -j -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/${KEY}/jdk-${MAJOR}_osx-x64_bin.dmg"
-      curl -j -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/${KEY}/jdk-${MAJOR}_osx-x64_bin.dmg
-      open jdk-${MAJOR}_osx-x64_bin.dmg
-      open "/Volumes/JDK ${MAJOR}/JDK ${MAJOR}.pkg"
-      sleep 5
-      echo -n "Hit enter after JDK ${MAJOR} install completes."
-      read IN
-      diskutil unmount $(diskutil list | grep "JDK ${MAJOR}" | awk '{ print $NF }')
-      rm -f jdk-${MAJOR}_osx-x64_bin.dmg
-    fi
-}
-
-function get-java-for {
-    PLATFORM="$1"
-    # echo "Usage: get-java <platform> <major> <minor> <build> <key>"
-    # echo "Platform should be one of linux-i586, linux-x64, macosx-x64, windows-i586 or windows-x64"
-    # echo "For example, 8u121-b13 would be 8 121 13 or 7u71-b14 would be 7 71 14, key is a new component of the download URL."
-    # return
-
-    case "${PLATFORM}" in
-        "linux-i586")
-            SUFFIX="tar.gz"
-            ;;
-        "linux-x64")
-            SUFFIX="tar.gz"
-            ;;
-        "macosx-x64")
-            SUFFIX="dmg"
-            ;;
-        "windows-i586")
-            SUFFIX="exe"
-            ;;
-        "windows-x64")
-            SUFFIX="exe"
-            ;;
-        *)
-            echo "ERROR: Unable to find platform ${PLATFORM}"
-            return
-            ;;
-    esac
-
-    if [[ "$#" -eq 5 ]]
-    then
-      MAJOR="$2"
-      MINOR="$3"
-      BUILD="$4"
-      KEY="$5"
-
-      echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
-      echo "curl -j -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
-      curl -j -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O "http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}"
-      echo
-    elif [[ "$#" -eq 4 ]]
-    then
-      MAJOR="$2"
-      MINOR="$3"
-      KEY="$4"
-      echo "Getting JDK ${MAJOR}+${MINOR} for ${PLATFORM}"
-      echo "curl -j -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/jdk-${MAJOR}_${PLATFORM}_bin.${SUFFIX}"
-      curl -j -k -s -L -C - -b "oraclelicense=accept-securebackup-cookie" -O http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/jdk-${MAJOR}_${PLATFORM}_bin.${SUFFIX}
-    fi
-}
-
-function echo-java-for {
-    PLATFORM="$1"
-
-    case "${PLATFORM}" in
-        "linux-i586")
-            SUFFIX="tar.gz"
-            ;;
-        "linux-x64")
-            SUFFIX="tar.gz"
-            ;;
-        "macosx-x64")
-            SUFFIX="dmg"
-            ;;
-        "windows-i586")
-            SUFFIX="exe"
-            ;;
-        "windows-x64")
-            SUFFIX="exe"
-            ;;
-        *)
-            echo "ERROR: Unable to find platform ${PLATFORM}"
-            return
-            ;;
-    esac
-
-    if [[ "$#" -eq 5 ]]
-    then
-      MAJOR="$2"
-      MINOR="$3"
-      BUILD="$4"
-      KEY="$5"
-
-      echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
-      echo "curl -j -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O \"http://download.oracle.com/otn-pub/java/jdk/${MAJOR}u${MINOR}-b${BUILD}/${KEY}/jdk-${MAJOR}u${MINOR}-${PLATFORM}.${SUFFIX}\""
-      echo
-    elif [[ "$#" -eq 3 ]]
-    then
-      echo "Getting JDK ${MAJOR}u${MINOR} for ${PLATFORM}"
-      echo "curl -j -k -s -L -C - -b \"oraclelicense=accept-securebackup-cookie\" -O \"http://download.oracle.com/otn-pub/java/jdk/${MAJOR}+${MINOR}/jdk-${MAJOR}_${PLATFORM}_bin.${SUFFIX}\""
-    fi
-}
+typeset -a J13_LIST
+typeset -a J14_LIST
+typeset -a J15_LIST
+typeset -a J16_LIST
+typeset -a J17_LIST
 
 function getJVMs {
   pushd /Library/Java/JavaVirtualMachines/ &>/dev/null
@@ -259,6 +84,55 @@ function getJVMs {
       (( I += 1 ))
     done
   fi
+
+  I=1
+  N14=$(find . -maxdepth 1 -type d -a -name jdk-14\* | wc -l)
+  if [[ ${N14} -gt 0 ]]
+  then
+    for DIR in $(find . -maxdepth 1 -type d -a -name jdk-14\* | sort -n)
+    do
+      local JVM=$(echo ${DIR} | sed -e 's/\.\///' -e 's/^jdk-//' -e 's/.jdk$//' )
+      J14_LIST[I]=${JVM}
+      (( I += 1 ))
+    done
+  fi
+
+  I=1
+  N15=$(find . -maxdepth 1 -type d -a -name jdk-15\* | wc -l)
+  if [[ ${N15} -gt 0 ]]
+  then
+    for DIR in $(find . -maxdepth 1 -type d -a -name jdk-15\* | sort -n)
+    do
+      local JVM=$(echo ${DIR} | sed -e 's/\.\///' -e 's/^jdk-//' -e 's/.jdk$//' )
+      J15_LIST[I]=${JVM}
+      (( I += 1 ))
+    done
+  fi
+
+  I=1
+  N16=$(find . -maxdepth 1 -type d -a -name jdk-16\* | wc -l)
+  if [[ ${N16} -gt 0 ]]
+  then
+    for DIR in $(find . -maxdepth 1 -type d -a -name jdk-16\* | sort -n)
+    do
+      local JVM=$(echo ${DIR} | sed -e 's/\.\///' -e 's/^jdk-//' -e 's/.jdk$//' )
+      J16[I]=${JVM}
+      (( I += 1 ))
+    done
+  fi
+
+  I=1
+  N17=$(find . -maxdepth 1 -type d -a -name jdk-17\* | wc -l)
+  if [[ ${N17} -gt 0 ]]
+  then
+    for DIR in $(find . -maxdepth 1 -type d -a -name jdk-17\* | sort -n)
+    do
+      local JVM=$(echo ${DIR} | sed -e 's/\.\///' -e 's/^jdk-//' -e 's/.jdk$//' )
+      J17_LIST[I]=${JVM}
+      (( I += 1 ))
+    done
+  fi
+
   popd&>/dev/null
 
   if [[ -n ${J8_LIST} ]]
@@ -284,6 +158,22 @@ function getJVMs {
   if [[ -n ${J13_LIST} ]]
   then
     echo "Latest Java 13: ${J13_LIST[-1]} from ${J13_LIST}"
+  fi
+  if [[ -n ${J14_LIST} ]]
+  then
+    echo "Latest Java 14: ${J14_LIST[-1]} from ${J14_LIST}"
+  fi
+  if [[ -n ${J15_LIST} ]]
+  then
+    echo "Latest Java 15: ${J15_LIST[-1]} from ${J15_LIST}"
+  fi
+  if [[ -n ${J16_LIST} ]]
+  then
+    echo "Latest Java 16: ${J16_LIST[-1]} from ${J16_LIST}"
+  fi
+  if [[ -n ${J17_LIST} ]]
+  then
+    echo "Latest Java 17: ${J17_LIST[-1]} from ${J17_LIST}"
   fi
 }
 
@@ -312,6 +202,18 @@ function updateJava {
   elif [[ "${DESIRED}" == "13" ]]
   then
     JVM=${J13_LIST[-1]}
+  elif [[ "${DESIRED}" == "14" ]]
+  then
+    JVM=${J14_LIST[-1]}
+  elif [[ "${DESIRED}" == "15" ]]
+  then
+    JVM=${J15_LIST[-1]}
+  elif [[ "${DESIRED}" == "16" ]]
+  then
+    JVM=${J16_LIST[-1]}
+  elif [[ "${DESIRED}" == "17" ]]
+  then
+    JVM=${J17_LIST[-1]}
   else
     echo "Unknown JVM version: ${DESIRED}"
     return
