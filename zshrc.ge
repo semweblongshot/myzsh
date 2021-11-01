@@ -52,6 +52,9 @@ fi
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/Workspace/oh-my-zsh
 
+autoload -U promptinit; promptinit
+prompt spaceship
+
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
@@ -144,6 +147,8 @@ bindkey -v
 alias addDockSpace="defaults write com.apple.dock persistent-apps -array-add '{\"tile-type\"=\"spacer-tile\";}'; killall Dock;"
 alias vi='/usr/local/bin/vim'
 
+alias uz='. ~/.zshrc'
+
 # Super user
 alias _='sudo '
 
@@ -162,14 +167,14 @@ alias l='ls -l'
 alias la='ls -la'
 alias a='ls -a'
 alias sl=ls # often screw this up
-alias pw='cat ~/ssopw|pbcopy'
+alias passprhase='cat ~/.ge.passphrase|pbcopy'
 alias hc-win-tunnel='ssh -v -N -L 3389:10.231.15.222:3389 gecloud@10.231.15.212 -i ~/.ssh/ctt-hc-devops.pem &'
 alias rsvp-tunnel='ssh poc-atd-1 -v -N -L 5601:localhost:5601'
 alias t11=/usr/local/opt/terraform@0.11/bin/terraform
 
 # SSO
 export SSO=212559393
-export NIX="de559393"
+export NIX=de559393
 
 # LS colors
 export CLICOLOR="true"
@@ -189,8 +194,9 @@ MANPATH="/usr/local/opt/findutils/libexec/gnuman:/usr/local/opt/coreutils/libexe
 export CDPATH=.:${HOME}:${HOME}/Workspace:${HOME}/Workspace/p4
 
 # PATH
-export PATH=${HOME}/bin:${HOME}/go/bin:/usr/local/opt/curl/bin:/usr/local/opt/findutils/libexec/gnubin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:.:/sbin:/usr/sbin:/usr/bin:/bin
+export PATH=${HOME}/bin:${HOME}/go/bin:/usr/local/opt/openssl/bin:/usr/local/opt/curl/bin:/usr/local/opt/findutils/libexec/gnubin:/usr/local/opt/coreutils/libexec/gnubin:/usr/local/bin:.:/sbin:/usr/sbin:/usr/bin:/bin
 export EDITOR=vim
+addPath ${HOME}/.krew/bin
 
 export JAVA_HOME=$(/usr/libexec/java_home)
 addPath -e JAVA_HOME
@@ -202,3 +208,5 @@ export GROOVY_HOME=/usr/local/opt/groovy/libexec
 
 source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 source <(kubectl completion zsh)
+
+eval $(thefuck --alias)
